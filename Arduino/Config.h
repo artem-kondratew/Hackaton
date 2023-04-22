@@ -15,8 +15,8 @@
 
 #define LEFT                     0
 #define RIGHT                    1
-#define FORWARD                  0
-#define BACKWARD                 1
+#define FORWARD                  1
+#define BACKWARD                 0
 
 #define DEFAULT_SPEED          180
 

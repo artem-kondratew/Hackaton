@@ -8,7 +8,7 @@
 
 #include <csignal>
 #include <sys/ioctl.h>
-#include "ncurses.h"
+#include <ncurses.h>
 #include "Connect.h"
 #include "History.h"
 

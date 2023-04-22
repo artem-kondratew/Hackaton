@@ -236,14 +236,12 @@ void Connect::moveBackward() {
 void Connect::turnRight() {
     resetCommand();
     command[COMMAND_TASK_CELL] = TURN_RIGHT_TASK;
-    command[COMMAND_VALUE2_CELL] = 45;
 }
 
 
 void Connect::turnLeft() {
     resetCommand();
     command[COMMAND_TASK_CELL] = TURN_LEFT_TASK;
-    command[COMMAND_VALUE2_CELL] = 45;
 }
 
 
