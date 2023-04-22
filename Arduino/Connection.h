@@ -4,7 +4,7 @@
 
 
 #include "Config.h"
-#include "Servo.h"
+#include "Bot.h"
 
 
 uint8_t command[COMMAND_SIZE];
