@@ -1,0 +1,1 @@
+gst-launch-1.0 v4l2src device=/dev/video0 ! 'image/jpeg,width=320,height=240, framerate=10/1' ! rtpjpegpay ! udpsink host=10.208.8.57 port=4000 sync=false
