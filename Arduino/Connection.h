@@ -121,7 +121,7 @@ void Connection::receiveCommand() {
         command[COMMAND_START_BYTE1_CELL] = Serial.read();
         command[COMMAND_START_BYTE2_CELL] = Serial.read();
         if (command[COMMAND_START_BYTE1_CELL] == START_BYTE && command[COMMAND_START_BYTE2_CELL] == START_BYTE) {
-            for (int cell = COMMAND_ID_CELL; cell < COMMAND_SIZE; cell++) {
+            for (int cell = COMMAND_TASK1_CELL; cell < COMMAND_SIZE; cell++) {
                 command[cell] = Serial.read();
             }
             if (!calcCommandCheckSum()) {
@@ -135,21 +135,21 @@ void Connection::receiveCommand() {
 
 void Connection::findCommand() {
     uint16_t value = command[COMMAND_VALUE1_CELL] * 100 + command[COMMAND_VALUE2_CELL];
-    uint8_t task = command[COMMAND_ID_CELL] * 10 + command[COMMAND_TASK_CELL];
+    uint8_t task = command[COMMAND_TASK1_CELL] * 10 + command[COMMAND_TASK2_CELL];
     if (task == MOVE_FORWARD_TASK) {
-        return moveForward(value);
+        return Bot::moveForward(value);
     }
     if (task == MOVE_BACKWARD_TASK) {
-        return moveBackward(value);
+        return Bot::moveBackward(value);
     }
     if (task == STOP_TASK) {
-        return stop();
+        return Bot::stop();
     }
     if (task == TURN_RIGHT_TASK) {
-        return turnRight();
+        return Bot::turnRight();
     }
     if (task == TURN_LEFT_TASK) {
-        return turnLeft();
+        return Bot::turnLeft();
     }
     if (task == PITCH_CAMERA_TASK) {
         return Camera::pitch(value);
@@ -163,13 +163,13 @@ void Connection::findCommand() {
     if (task == CLAW_POP_TASK) {
         return Claw::pop();
     }
-    if (task == CLAW_MOVE_TASK) {
-        return Claw::moveClaw(value);
+    if (task == CLAW_ROTATE_TASK) {
+        return Claw::rotateClaw(value);
     }
-    if (task == CLAW_DROP_TASK1 * 10 + CLAW_DROP_TASK2) {
+    if (task == CLAW_DROP_TASK) {
         return Claw::drop();
     }
-    if (task == CLAW_RISE_TASK1 * 10 + CLAW_RISE_TASK2) {
+    if (task == CLAW_RISE_TASK) {
         return Claw::rise();
     }
 }

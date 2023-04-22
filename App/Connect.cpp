@@ -37,8 +37,8 @@ bool Connect::openArduino() {
 void Connect::resetCommand() {
     command[COMMAND_START_BYTE1_CELL] = START_BYTE;
     command[COMMAND_START_BYTE2_CELL] = START_BYTE;
-    command[COMMAND_ID_CELL] = 0;
-    command[COMMAND_TASK_CELL] = PING_TASK;
+    command[COMMAND_TASK1_CELL] = 0;
+    command[COMMAND_TASK2_CELL] = PING_TASK;
     command[COMMAND_VALUE1_CELL] = PING_VALUE1;
     command[COMMAND_VALUE2_CELL] = PING_VALUE2;
     calcCommandCheckSum();
@@ -120,13 +120,9 @@ void Connect::sendCommand() {
 }
 
 
-void Connect::setId(uint8_t id) {
-    command[COMMAND_ID_CELL] = id;
-}
-
-
 void Connect::setTask(uint8_t task) {
-    command[COMMAND_TASK_CELL] = task;
+    command[COMMAND_TASK1_CELL] = task / 10;
+    command[COMMAND_TASK2_CELL] = task % 10;
 }
 
 
@@ -137,12 +133,8 @@ void Connect::setValue(uint16_t value) {
 
 
 void Connect::encodeCommand(uint64_t cmd) {
-    auto id = static_cast<uint8_t>(cmd / 100000);
-    setId(id);
-
-    auto task = static_cast<uint8_t>((cmd % 100000) / 10000);
+    auto task = static_cast<uint8_t>(cmd / 10000);
     setTask(task);
-
     uint16_t value = cmd % 10000;
     setValue(value);
 }
@@ -217,64 +209,56 @@ uint64_t Connect::checkNumberCommand() {
 
 void Connect::stop() {
     resetCommand();
-    command[COMMAND_ID_CELL] = 0;
-    command[COMMAND_TASK_CELL] = STOP_TASK;
+    setTask(STOP_TASK);
 }
 
 
 void Connect::moveForward() {
     resetCommand();
-    command[COMMAND_ID_CELL] = 0;
-    command[COMMAND_TASK_CELL] = MOVE_FORWARD_TASK;
+    setTask(MOVE_FORWARD_TASK);
 }
 
 
 void Connect::moveBackward() {
     resetCommand();
-    command[COMMAND_ID_CELL] = 0;
-    command[COMMAND_TASK_CELL] = MOVE_BACKWARD_TASK;
+    setTask(MOVE_BACKWARD_TASK);
 }
 
 
 void Connect::turnRight() {
     resetCommand();
-    command[COMMAND_ID_CELL] = 0;
-    command[COMMAND_TASK_CELL] = TURN_RIGHT_TASK;
+    setTask(TURN_RIGHT_TASK);
 }
 
 
 void Connect::turnLeft() {
     resetCommand();
-    command[COMMAND_ID_CELL] = 0;
-    command[COMMAND_TASK_CELL] = TURN_LEFT_TASK;
+    setTask(TURN_LEFT_TASK);
 }
 
 
 void Connect::push() {
     resetCommand();
-    command[COMMAND_ID_CELL] = 0;
-    command[COMMAND_TASK_CELL] = CLAW_PUSH_TASK;
+    setTask(CLAW_PUSH_TASK);
+    setValue(0);
 }
 
 
 void Connect::pop() {
     resetCommand();
-    command[COMMAND_ID_CELL] = 0;
-    command[COMMAND_TASK_CELL] = CLAW_POP_TASK;
+    setTask(CLAW_POP_TASK);
 }
 
 
 void Connect::rise() {
     resetCommand();
-    command[COMMAND_ID_CELL] = CLAW_RISE_TASK1;
-    command[COMMAND_TASK_CELL] = CLAW_RISE_TASK2;
+    setTask(CLAW_RISE_TASK);
 }
 
 
 void Connect::drop() {
     resetCommand();
-    command[COMMAND_ID_CELL] = CLAW_DROP_TASK1;
-    command[COMMAND_TASK_CELL] = CLAW_DROP_TASK2;
+    setTask(CLAW_DROP_TASK);
 }
 
 

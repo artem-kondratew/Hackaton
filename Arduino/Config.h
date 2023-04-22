@@ -30,8 +30,8 @@
 
 #define COMMAND_START_BYTE1_CELL 0
 #define COMMAND_START_BYTE2_CELL 1
-#define COMMAND_ID_CELL          2
-#define COMMAND_TASK_CELL        3
+#define COMMAND_TASK1_CELL       2
+#define COMMAND_TASK2_CELL       3
 #define COMMAND_VALUE1_CELL      4
 #define COMMAND_VALUE2_CELL      5
 #define COMMAND_CHECKSUM_CELL    6
@@ -67,22 +67,18 @@
 #define MESSAGE_CHECKSUM_CELL   27
 #define MESSAGE_SIZE            28
 
-#define TASK_NUMBER              3
-
 #define MOVE_BACKWARD_TASK       0
 #define MOVE_FORWARD_TASK        1
 #define STOP_TASK                2
 #define TURN_RIGHT_TASK          3
 #define TURN_LEFT_TASK           4
-#define YAW_CAMERA_TASK          5
-#define PITCH_CAMERA_TASK        6
+#define PITCH_CAMERA_TASK        5
+#define YAW_CAMERA_TASK          6
 #define CLAW_PUSH_TASK           7
 #define CLAW_POP_TASK            8
-#define CLAW_MOVE_TASK           9
-#define CLAW_DROP_TASK1          1
-#define CLAW_DROP_TASK2          0
-#define CLAW_RISE_TASK1          1
-#define CLAW_RISE_TASK2          1
+#define CLAW_ROTATE_TASK         9
+#define CLAW_DROP_TASK          10
+#define CLAW_RISE_TASK          11
 
 
 #endif

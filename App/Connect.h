@@ -47,7 +47,6 @@ public:
     static void sendCommand();
 
 private:
-    static void setId(uint8_t id);
     static void setTask(uint8_t task);
     static void setValue(uint16_t value);
     static void encodeCommand(uint64_t cmd);

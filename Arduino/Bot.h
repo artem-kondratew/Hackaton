@@ -6,7 +6,26 @@
 #include "Config.h"
 
 
-void moveForward(uint8_t speed) {
+class Bot {
+public:
+    static void init();
+    static void moveForward(uint8_t speed);
+    static void moveBackward(uint8_t speed);
+    static void stop();
+    static void turnRight();
+    static void turnLeft();
+};
+
+
+void Bot::init() {
+    pinMode(M1_DIR, OUTPUT);
+    pinMode(M1_PWM, OUTPUT);
+    pinMode(M2_DIR, OUTPUT);
+    pinMode(M2_PWM, OUTPUT);
+}
+
+
+void Bot::moveForward(uint8_t speed) {
     digitalWrite(M1_DIR, FORWARD);
     analogWrite(M1_PWM, speed);
     digitalWrite(M2_DIR, FORWARD);
@@ -14,7 +33,7 @@ void moveForward(uint8_t speed) {
 }
 
 
-void moveBackward(uint8_t speed) {
+void Bot::moveBackward(uint8_t speed) {
     digitalWrite(M1_DIR, BACKWARD);
     analogWrite(M1_PWM, speed);
     digitalWrite(M2_DIR, BACKWARD);
@@ -22,13 +41,13 @@ void moveBackward(uint8_t speed) {
 }
 
 
-void stop() {
+void Bot::stop() {
     analogWrite(M1_PWM, 0);
     analogWrite(M2_PWM, 0);
 }
 
 
-void turnRight() {
+void Bot::turnRight() {
     digitalWrite(M1_DIR, BACKWARD);
     analogWrite(M1_PWM, DEFAULT_SPEED);
     digitalWrite(M2_DIR, FORWARD);
@@ -36,7 +55,7 @@ void turnRight() {
 }
 
 
-void turnLeft() {
+void Bot::turnLeft() {
     digitalWrite(M1_DIR, FORWARD);
     analogWrite(M1_PWM, DEFAULT_SPEED);
     digitalWrite(M2_DIR, BACKWARD);
