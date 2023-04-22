@@ -7,8 +7,8 @@
 
 
 class Camera{
-    Servo Pin_D11; // Camera Head
-    Servo Pin_D10;  // Low Servo
+    Servo Pin_D11; // Head servo
+    Servo Pin_D10;  // Bottom servo
 public:
 
     void ServoAttach(){
@@ -16,22 +16,26 @@ public:
         Pin_D10.attach(10);
     }
 
-    void Move(int Angle){
+    void Pitch(int Angle){  // Turn up and Down
         if(Angle > 180) Angle = 180;
-        if(Angle < 100) Angle = 100;
-        Pin_D9.write(Angle);
+        if(Angle < 40) Angle = 40;
+        Pin_D11.write(Angle);
     }
 
-    void Catch(int Angle){
+    void Yaw(int Angle){  // Turn Left or Right
         if(Angle > 180) Angle = 180;
         if(Angle < 0) Angle = 0;
-
-        Pin_D8.write(Angle);
+        Pin_D10.write(Angle);
     }
-
-    void ServoSetUp(){
+    
+    void Default(){
+        Pin_D11.write(83);
+        Pin_D10.write(100);
+    }
+    
+    void CameraServoSetUp(){
         ServoAttach();
-        Move(100);
+        Default();
         Catch(0);
     }
 };

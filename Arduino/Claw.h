@@ -29,10 +29,14 @@ public:
         Pin_D8.write(Angle);
     }
 
+    void Default(){
+       Pitch(100);
+        Catch(0);
+    }
+    
     void ServoSetUp(){
         ServoAttach();
-        Pitch(100);
-        Catch(0);
+        Default();
     }
 };
 
