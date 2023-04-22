@@ -28,23 +28,19 @@ void stop() {
 }
 
 
-void turnRight(uint16_t angle) {
+void turnRight() {
     digitalWrite(M1_DIR, BACKWARD);
     analogWrite(M1_PWM, DEFAULT_SPEED);
     digitalWrite(M2_DIR, FORWARD);
     analogWrite(M2_PWM, DEFAULT_SPEED);
-    delay(9 * angle);
-    stop();
 }
 
 
-void turnLeft(uint16_t angle) {
+void turnLeft() {
     digitalWrite(M1_DIR, FORWARD);
     analogWrite(M1_PWM, DEFAULT_SPEED);
     digitalWrite(M2_DIR, BACKWARD);
     analogWrite(M2_PWM, DEFAULT_SPEED);
-    delay(9 * angle);
-    stop();
 }
 
 
