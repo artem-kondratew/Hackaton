@@ -6,39 +6,52 @@
 #include <Servo.h>
 
 
+Servo yaw_servo;  // Head servo D10
+Servo pitch_servo;  // Bottom servo D11
+
+
 class Camera{
-    Servo Pin_D11; // Head servo
-    Servo Pin_D10;  // Bottom servo
 public:
-
-    void ServoAttach(){
-        Pin_D11.attach(11);
-        Pin_D10.attach(10);
-    }
-
-    void Pitch(int Angle){  // Turn up and Down
-        if(Angle > 180) Angle = 180;
-        if(Angle < 40) Angle = 40;
-        Pin_D11.write(Angle);
-    }
-
-    void Yaw(int Angle){  // Turn Left or Right
-        if(Angle > 180) Angle = 180;
-        if(Angle < 0) Angle = 0;
-        Pin_D10.write(Angle);
-    }
-    
-    void Default(){
-        Pin_D11.write(83);
-        Pin_D10.write(100);
-    }
-    
-    void CameraServoSetUp(){
-        ServoAttach();
-        Default();
-        Catch(0);
-    }
+    static void init();
+    static void pitch(int angle);
+    static void yaw(int angle);
+    static void setStartPosition();
 };
+
+
+void Camera::init() {
+    yaw_servo.attach(10);
+    pitch_servo.attach(11);
+    setStartPosition();
+}
+
+
+void Camera::pitch(int angle) {
+    if(angle > 180) {
+        angle = 180;
+    }
+    if(angle < 40) {
+        angle = 40;
+    }
+    pitch_servo.write(angle);
+}
+
+
+void Camera::yaw(int angle){
+    if(angle > 180) {
+        angle = 180;
+    }
+    if(angle < 0) {
+        angle = 0;
+    }
+    yaw_servo.write(angle);
+}
+
+
+void Camera::setStartPosition() {
+    yaw_servo.write(100);
+    pitch_servo.write(100);
+}
 
 
 #endif

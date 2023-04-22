@@ -245,6 +245,32 @@ void Connect::turnLeft() {
 }
 
 
+void Connect::push() {
+    resetCommand();
+    command[COMMAND_TASK_CELL] = CLAW_PUSH_TASK;
+}
+
+
+void Connect::pop() {
+    resetCommand();
+    command[COMMAND_TASK_CELL] = CLAW_POP_TASK;
+}
+
+
+void Connect::rise() {
+    resetCommand();
+    command[COMMAND_ID_CELL] = CLAW_RISE_TASK1;
+    command[COMMAND_TASK_CELL] = CLAW_RISE_TASK2;
+}
+
+
+void Connect::drop() {
+    resetCommand();
+    command[COMMAND_ID_CELL] = CLAW_DROP_TASK1;
+    command[COMMAND_TASK_CELL] = CLAW_DROP_TASK2;
+}
+
+
 void Connect::decodeKeyInput() {
 
     if (checkNumberCommand() == key_cmd.size()) {
@@ -265,5 +291,17 @@ void Connect::decodeKeyInput() {
     }
     if (key_cmd.get_str() == "l") {
         return turnLeft();
+    }
+    if (key_cmd.get_str() == "push") {
+        return push();
+    }
+    if (key_cmd.get_str() == "pop") {
+        return pop();
+    }
+    if (key_cmd.get_str() == "rise") {
+        return rise();
+    }
+    if (key_cmd.get_str() == "drop") {
+        return drop();
     }
 }

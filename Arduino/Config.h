@@ -23,10 +23,10 @@
 #define TIMER                  100
 #define START_BYTE              64
 
-#define PING_DXL_ID             35  //  #  // Checksum = 81 (Q)
-#define PING_TASK                3  //  $
-#define PING_VALUE1             37  //  %
-#define PING_VALUE2             61  //  Q
+#define PING_DXL_ID             35
+#define PING_TASK                2
+#define PING_VALUE1             37
+#define PING_VALUE2             61
 
 #define COMMAND_START_BYTE1_CELL 0
 #define COMMAND_START_BYTE2_CELL 1
@@ -69,11 +69,20 @@
 
 #define TASK_NUMBER              3
 
-#define MOVE_BACKWARD_TASK       2
+#define MOVE_BACKWARD_TASK       0
 #define MOVE_FORWARD_TASK        1
-#define STOP_TASK                3
-#define TURN_RIGHT_TASK          4
-#define TURN_LEFT_TASK           5
+#define STOP_TASK                2
+#define TURN_RIGHT_TASK          3
+#define TURN_LEFT_TASK           4
+#define YAW_CAMERA_TASK          5
+#define PITCH_CAMERA_TASK        6
+#define CLAW_PUSH_TASK           7
+#define CLAW_POP_TASK            8
+#define CLAW_MOVE_TASK           9
+#define CLAW_DROP_TASK1          1
+#define CLAW_DROP_TASK2          0
+#define CLAW_RISE_TASK1          1
+#define CLAW_RISE_TASK2          1
 
 
 #endif

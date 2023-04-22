@@ -67,6 +67,10 @@ public:
     static void moveBackward();
     static void turnRight();
     static void turnLeft();
+    static void push();
+    static void pop();
+    static void rise();
+    static void drop();
 
     static void decodeKeyInput();
 };

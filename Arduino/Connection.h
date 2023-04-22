@@ -3,8 +3,10 @@
 #define Connection_h
 
 
-#include "Config.h"
 #include "Bot.h"
+#include "Camera.h"
+#include "Claw.h"
+#include "Config.h"
 
 
 uint8_t command[COMMAND_SIZE];
@@ -133,20 +135,42 @@ void Connection::receiveCommand() {
 
 void Connection::findCommand() {
     uint16_t value = command[COMMAND_VALUE1_CELL] * 100 + command[COMMAND_VALUE2_CELL];
-    if (command[COMMAND_TASK_CELL] == MOVE_FORWARD_TASK) {
+    uint8_t task = command[COMMAND_ID_CELL] * 10 + command[COMMAND_TASK_CELL];
+    if (task == MOVE_FORWARD_TASK) {
         return moveForward(value);
     }
-    if (command[COMMAND_TASK_CELL] == MOVE_BACKWARD_TASK) {
+    if (task == MOVE_BACKWARD_TASK) {
         return moveBackward(value);
     }
-    if (command[COMMAND_TASK_CELL] == STOP_TASK) {
+    if (task == STOP_TASK) {
         return stop();
     }
-    if (command[COMMAND_TASK_CELL] == TURN_RIGHT_TASK) {
-        return turnRight(value);
+    if (task == TURN_RIGHT_TASK) {
+        return turnRight();
     }
-    if (command[COMMAND_TASK_CELL] == TURN_LEFT_TASK) {
-        return turnLeft(value);
+    if (task == TURN_LEFT_TASK) {
+        return turnLeft();
+    }
+    if (task == PITCH_CAMERA_TASK) {
+        return Camera::pitch(value);
+    }
+    if (task == YAW_CAMERA_TASK) {
+        return Camera::yaw(value);
+    }
+    if (task == CLAW_PUSH_TASK) {
+        return Claw::push(value);
+    }
+    if (task == CLAW_POP_TASK) {
+        return Claw::pop();
+    }
+    if (task == CLAW_MOVE_TASK) {
+        return Claw::moveClaw(value);
+    }
+    if (task == CLAW_DROP_TASK) {
+        return Claw::drop();
+    }
+    if (task == CLAW_RISE_TASK) {
+        return Claw::rise();
     }
 }
 
