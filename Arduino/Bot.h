@@ -1,6 +1,9 @@
 
-#ifndef Servo_h
-#define Servo_h
+#ifndef Bot_h
+#define Bot_h
+
+
+#include "Config.h"
 
 
 void moveForward(uint8_t speed) {

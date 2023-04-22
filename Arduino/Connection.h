@@ -4,7 +4,7 @@
 
 
 #include "Config.h"
-#include "Servo.h"
+#include "Bot.h"
 
 
 uint8_t command[COMMAND_SIZE];
@@ -148,7 +148,6 @@ void Connection::findCommand() {
     if (command[COMMAND_TASK_CELL] == TURN_LEFT_TASK) {
         return turnLeft(value);
     }
-    
 }
 
 

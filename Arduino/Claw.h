@@ -1,5 +1,7 @@
+
 #ifndef Claw_h
 #define Claw_h
+
 
 #include <Servo.h>
 
@@ -32,9 +34,7 @@ public:
         Move(100);
         Catch(0);
     }
-
 };
 
 
 #endif
-
