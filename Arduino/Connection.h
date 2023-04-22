@@ -166,10 +166,10 @@ void Connection::findCommand() {
     if (task == CLAW_MOVE_TASK) {
         return Claw::moveClaw(value);
     }
-    if (task == CLAW_DROP_TASK) {
+    if (task == CLAW_DROP_TASK1 * 10 + CLAW_DROP_TASK2) {
         return Claw::drop();
     }
-    if (task == CLAW_RISE_TASK) {
+    if (task == CLAW_RISE_TASK1 * 10 + CLAW_RISE_TASK2) {
         return Claw::rise();
     }
 }

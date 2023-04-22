@@ -37,7 +37,7 @@ bool Connect::openArduino() {
 void Connect::resetCommand() {
     command[COMMAND_START_BYTE1_CELL] = START_BYTE;
     command[COMMAND_START_BYTE2_CELL] = START_BYTE;
-    command[COMMAND_ID_CELL] = PING_DXL_ID;
+    command[COMMAND_ID_CELL] = 0;
     command[COMMAND_TASK_CELL] = PING_TASK;
     command[COMMAND_VALUE1_CELL] = PING_VALUE1;
     command[COMMAND_VALUE2_CELL] = PING_VALUE2;
@@ -217,42 +217,49 @@ uint64_t Connect::checkNumberCommand() {
 
 void Connect::stop() {
     resetCommand();
+    command[COMMAND_ID_CELL] = 0;
     command[COMMAND_TASK_CELL] = STOP_TASK;
 }
 
 
 void Connect::moveForward() {
     resetCommand();
+    command[COMMAND_ID_CELL] = 0;
     command[COMMAND_TASK_CELL] = MOVE_FORWARD_TASK;
 }
 
 
 void Connect::moveBackward() {
     resetCommand();
+    command[COMMAND_ID_CELL] = 0;
     command[COMMAND_TASK_CELL] = MOVE_BACKWARD_TASK;
 }
 
 
 void Connect::turnRight() {
     resetCommand();
+    command[COMMAND_ID_CELL] = 0;
     command[COMMAND_TASK_CELL] = TURN_RIGHT_TASK;
 }
 
 
 void Connect::turnLeft() {
     resetCommand();
+    command[COMMAND_ID_CELL] = 0;
     command[COMMAND_TASK_CELL] = TURN_LEFT_TASK;
 }
 
 
 void Connect::push() {
     resetCommand();
+    command[COMMAND_ID_CELL] = 0;
     command[COMMAND_TASK_CELL] = CLAW_PUSH_TASK;
 }
 
 
 void Connect::pop() {
     resetCommand();
+    command[COMMAND_ID_CELL] = 0;
     command[COMMAND_TASK_CELL] = CLAW_POP_TASK;
 }
 
