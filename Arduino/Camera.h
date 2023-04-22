@@ -1,22 +1,22 @@
 
-#ifndef Claw_h
-#define Claw_h
+#ifndef Camera_h
+#define Camera_h
 
 
 #include <Servo.h>
 
 
-class Claw{
-    Servo Pin_D9; // Claw mover
-    Servo Pin_D8;  // Claw
+class Camera{
+    Servo Pin_D11; // Camera Head
+    Servo Pin_D10;  // Low Servo
 public:
 
     void ServoAttach(){
-        Pin_D9.attach(9);
-        Pin_D8.attach(8);
+        Pin_D11.attach(11);
+        Pin_D10.attach(10);
     }
 
-    void Pitch(int Angle){  // Pitch is TANGAZH(for Artem Kondratev)
+    void Move(int Angle){
         if(Angle > 180) Angle = 180;
         if(Angle < 100) Angle = 100;
         Pin_D9.write(Angle);
@@ -31,7 +31,7 @@ public:
 
     void ServoSetUp(){
         ServoAttach();
-        Pitch(100);
+        Move(100);
         Catch(0);
     }
 };
