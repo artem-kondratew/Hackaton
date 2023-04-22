@@ -1,7 +1,7 @@
 
 #include "Connection.h"
 #include "Config.h"
-#include "Servo.h"
+#include "Bot.h"
 
 
 void setup() {
