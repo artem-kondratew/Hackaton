@@ -23,11 +23,6 @@
 #define TIMER                  100
 #define START_BYTE              64
 
-#define PING_DXL_ID             35
-#define PING_TASK                2
-#define PING_VALUE1             37
-#define PING_VALUE2             61
-
 #define COMMAND_START_BYTE1_CELL 0
 #define COMMAND_START_BYTE2_CELL 1
 #define COMMAND_TASK1_CELL       2
@@ -79,6 +74,11 @@
 #define CLAW_ROTATE_TASK         9
 #define CLAW_DROP_TASK          10
 #define CLAW_RISE_TASK          11
+
+#define PING_DXL_ID             35
+#define PING_TASK        STOP_TASK
+#define PING_VALUE1             37
+#define PING_VALUE2             61
 
 
 #endif
