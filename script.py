@@ -1,12 +1,10 @@
 import cv2
 
-
-camera = cv2.VideoCapture(0)
-
+cam = cv2.VideoCapture(0)
 
 while True:
-    success, frame = camera.read()
-
+    success, frame = cam.read()
+    #frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     if success:
-        cv2.imshow("TON", cv2.flip(cv2.flip(frame, 0), 1))
-        cv2.waitKey(20)
+        cv2.imwrite("image.jpg", frame)
+        cv2.waitKey(50)
