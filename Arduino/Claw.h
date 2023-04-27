@@ -28,6 +28,7 @@ public:
     static void init();
     static void drop();
     static void rise();
+    static void shake();
 };
 
 
@@ -77,6 +78,19 @@ void Claw::drop() {
 
 void Claw::rise() {
     rotateClaw(ROTATE_MAX_ANGLE);
+}
+
+
+void Claw::shake() {
+    push(CLAW_MIN_ANGLE);
+    rotateClaw(80);
+    rotateClaw(140);
+    rotateClaw(80);
+    rotateClaw(140);
+    rotateClaw(80);
+    rotateClaw(140);
+    drop();
+    pop();
 }
 
 
