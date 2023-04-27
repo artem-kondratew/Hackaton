@@ -63,4 +63,16 @@ void Bot::turnLeft() {
 }
 
 
+void PiezoBeep(int PiezoPin, int Tone, int TimeON, int TimeOFF, int Count)
+{
+  for(int i = 0; i < Count; i++)
+  {
+    tone(PiezoPin, Tone);
+    delay(TimeON);
+    noTone(PiezoPin);
+    delay(TimeOFF);
+  }
+}
+
+
 #endif
