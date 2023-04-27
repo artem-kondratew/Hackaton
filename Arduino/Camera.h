@@ -6,39 +6,61 @@
 #include <Servo.h>
 
 
+#define PITCH_MIN_ANGLE      40
+#define PITCH_MAX_ANGLE     180
+#define YAW_MIN_ANGLE         0
+#define YAW_MAX_ANGLE       180
+
+#define PITCH_DEFAULT_ANGLE 100
+#define YAW_DEFAULT_ANGLE   100
+
+
+Servo pitch_servo;  // Bottom servo D10
+Servo yaw_servo;    // Head servo   D11
+
+
 class Camera{
-    Servo Pin_D11; // Head servo
-    Servo Pin_D10;  // Bottom servo
 public:
-
-    void ServoAttach(){
-        Pin_D11.attach(11);
-        Pin_D10.attach(10);
-    }
-
-    void Pitch(int Angle){  // Turn up and Down
-        if(Angle > 180) Angle = 180;
-        if(Angle < 40) Angle = 40;
-        Pin_D11.write(Angle);
-    }
-
-    void Yaw(int Angle){  // Turn Left or Right
-        if(Angle > 180) Angle = 180;
-        if(Angle < 0) Angle = 0;
-        Pin_D10.write(Angle);
-    }
-    
-    void Default(){
-        Pin_D11.write(83);
-        Pin_D10.write(100);
-    }
-    
-    void CameraServoSetUp(){
-        ServoAttach();
-        Default();
-        Catch(0);
-    }
+    static void setStartPosition();
+    static void init();
+    static void pitch(uint8_t angle);
+    static void yaw(uint8_t angle);
 };
+
+
+void Camera::setStartPosition() {
+    yaw_servo.write(YAW_DEFAULT_ANGLE);
+    pitch_servo.write(PITCH_DEFAULT_ANGLE);
+}
+
+
+void Camera::init() {
+    yaw_servo.attach(11);
+    pitch_servo.attach(10);
+    setStartPosition();
+}
+
+
+void Camera::pitch(uint8_t angle) {
+    if(angle > PITCH_MAX_ANGLE) {
+        angle = PITCH_MAX_ANGLE;
+    }
+    if(angle < PITCH_MIN_ANGLE) {
+        angle = PITCH_MIN_ANGLE;
+    }
+    pitch_servo.write(angle);
+}
+
+
+void Camera::yaw(uint8_t angle){
+    if(angle > YAW_MAX_ANGLE) {
+        angle = YAW_MAX_ANGLE;
+    }
+    if(angle < YAW_MIN_ANGLE) {
+        angle = YAW_MIN_ANGLE;
+    }
+    yaw_servo.write(angle);
+}
 
 
 #endif

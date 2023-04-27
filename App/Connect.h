@@ -47,7 +47,6 @@ public:
     static void sendCommand();
 
 private:
-    static void setId(uint8_t id);
     static void setTask(uint8_t task);
     static void setValue(uint16_t value);
     static void encodeCommand(uint64_t cmd);
@@ -67,6 +66,11 @@ public:
     static void moveBackward();
     static void turnRight();
     static void turnLeft();
+    static void push();
+    static void pop();
+    static void rise();
+    static void drop();
+    static void beep();
 
     static void decodeKeyInput();
 };
