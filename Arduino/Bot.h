@@ -75,7 +75,14 @@ void Bot::piezoBeep() {
 }
 
 
+int LineSensorRead(int SensorPin)
+{
+  if(SensorPin < A0 || SensorPin > A3)
+    return -1;
 
+  int Data = analogRead(SensorPin);
+  return Data;
+}
 
 
 #endif
