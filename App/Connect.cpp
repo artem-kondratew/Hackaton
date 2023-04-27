@@ -308,7 +308,7 @@ void Connect::decodeKeyInput() {
     if (key_cmd.get_str() == "drop") {
         return drop();
     }
-    if (key_cmd.get_str() == "beep") {
+    if (key_cmd.get_str() == "b") {
         return beep();
     }
     if (key_cmd.get_str().substr(0, 4) == "rot ") {

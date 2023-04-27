@@ -4,15 +4,10 @@
 
 
 #include <Servo.h>
+#include "Config.h"
 
 
-#define CLAW_MIN_ANGLE        35
-#define CLAW_MAX_ANGLE       180
-#define ROTATE_MIN_ANGLE       5
-#define ROTATE_MAX_ANGLE     100
 
-#define ROTATE_DEFAULT_ANGLE 100
-#define CLAW_DEFAULT_ANGLE     0
 
 
 Servo claw_servo;    // Claw       D8
