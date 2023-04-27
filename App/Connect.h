@@ -58,7 +58,7 @@ public:
     static bool receiveMessage();
 
 private:
-    static uint64_t checkNumberCommand();
+    static uint64_t checkNumberCommand(std::string s);
 
 public:
     static void stop();
@@ -71,6 +71,7 @@ public:
     static void rise();
     static void drop();
     static void beep();
+    static void rotate(uint8_t angle);
 
     static void decodeKeyInput();
 };

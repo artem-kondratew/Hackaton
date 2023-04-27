@@ -14,7 +14,7 @@ public:
     static void stop();
     static void turnRight();
     static void turnLeft();
-    static void piezoBeep();
+    static void beep();
 };
 
 
@@ -64,7 +64,7 @@ void Bot::turnLeft() {
 }
 
 
-void Bot::piezoBeep() {
+void Bot::beep() {
   for(int i = 0; i < 3; i++)
   {
     tone(A1, 3000);
@@ -75,14 +75,7 @@ void Bot::piezoBeep() {
 }
 
 
-int LineSensorRead(int SensorPin)
-{
-  if(SensorPin < A0 || SensorPin > A3)
-    return -1;
 
-  int Data = analogRead(SensorPin);
-  return Data;
-}
 
 
 #endif

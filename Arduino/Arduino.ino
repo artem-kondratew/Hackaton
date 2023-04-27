@@ -13,10 +13,9 @@ void setup() {
     Bot::init();
     Camera::init();
     Claw::init();
-    Bot::piezoBeep();
 }
 
 
 void loop() {
-    //Connection::receiveCommand();
-}                                      
+    Connection::receiveCommand();
+}

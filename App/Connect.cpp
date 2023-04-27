@@ -192,12 +192,12 @@ bool Connect::receiveMessage() {
 }
 
 
-uint64_t Connect::checkNumberCommand() {
+uint64_t Connect::checkNumberCommand(std::string s) {
     uint8_t numbers[] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
     uint64_t flag = 0;
     for (int i = 0; i < key_cmd.size(); i++) {
         for (uint8_t number: numbers) {
-            if (key_cmd.get_str()[i] == number) {
+            if (s[i] == number) {
                 flag++;
                 break;
             }
@@ -268,9 +268,16 @@ void Connect::beep() {
 }
 
 
+void Connect::rotate(uint8_t angle) {
+    resetCommand();
+    setTask(CLAW_ROTATE_TASK);
+    setValue(angle);
+}
+
+
 void Connect::decodeKeyInput() {
 
-    if (checkNumberCommand() == key_cmd.size()) {
+    if (checkNumberCommand(key_cmd.get_str()) == key_cmd.size()) {
         Connect::encodeCommand(stoi(key_cmd.get_str()));
         return;
     }
@@ -300,5 +307,13 @@ void Connect::decodeKeyInput() {
     }
     if (key_cmd.get_str() == "drop") {
         return drop();
+    }
+    if (key_cmd.get_str() == "beep") {
+        return beep();
+    }
+    if (key_cmd.get_str().substr(0, 4) == "rot ") {
+        if (checkNumberCommand(key_cmd.get_str().substr(4, 3))) {
+            rotate(stoi(key_cmd.get_str().substr(4, 3)));
+        }
     }
 }

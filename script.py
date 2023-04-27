@@ -1,26 +1,28 @@
 import cv2
 
-bear_min_color = (0, 66, 18)
-bear_max_color = (13, 253, 149)
+camera = cv2.VideoCapture(0)
 
-#cam = cv2.VideoCapture(0)
-
-"""
 while True:
-    success, img = cam.read()
+    cx = 0
+    cy = 0
+    success, frame = camera.read()
 
     if success:
-        hsv = cv2.cvtColor(bi, cv2.COLOR_BGR2HSV)
-        bear = cv2.inRange(hsv, bear_min_color, bear_min_color)
-        cv2.imshow("image.jpg", bear)
-        cv2.waitKey(50)"""
+        hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+        binary = cv2.inRange(hsv, (0, 87, 9), (15, 170, 170))
 
-frame = cv2.imread("images/bear.jpg")
-frame = cv2.resize(frame, (600, 800))
+        contours, _ = cv2.findContours(binary, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
 
-hsv_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+        if len(contours) != 0:
+            maxc = max(contours, key = cv2.contourArea)
+            moments = cv2.moments(maxc)
 
-binary_frame = cv2.inRange(hsv_frame, bear_min_color, bear_max_color)
+            if moments["m00"] > 20:
+                cx = int(moments["m10"] / moments["m00"])
+                cy = int(moments["m01"] / moments["m00"])
 
-cv2.imshow("TEST", binary_frame)
-cv2.waitKey(0)
+                iSee = True
+
+
+    cv2.imshow("Camera", binary)
+    cv2.waitKeyEx(20)
