@@ -70,6 +70,7 @@ public:
     static void pop();
     static void rise();
     static void drop();
+    static void beep();
 
     static void decodeKeyInput();
 };

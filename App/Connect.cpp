@@ -262,6 +262,12 @@ void Connect::drop() {
 }
 
 
+void Connect::beep() {
+    resetCommand();
+    setTask(BEEP_TASK);
+}
+
+
 void Connect::decodeKeyInput() {
 
     if (checkNumberCommand() == key_cmd.size()) {

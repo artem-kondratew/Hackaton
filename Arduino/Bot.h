@@ -14,6 +14,7 @@ public:
     static void stop();
     static void turnRight();
     static void turnLeft();
+    static void piezoBeep();
 };
 
 
@@ -63,16 +64,18 @@ void Bot::turnLeft() {
 }
 
 
-void PiezoBeep(int PiezoPin, int Tone, int TimeON, int TimeOFF, int Count)
-{
-  for(int i = 0; i < Count; i++)
+void Bot::piezoBeep() {
+  for(int i = 0; i < 3; i++)
   {
-    tone(PiezoPin, Tone);
-    delay(TimeON);
-    noTone(PiezoPin);
-    delay(TimeOFF);
+    tone(A1, 3000);
+    delay(500);
+    noTone(A1);
+    delay(500);
   }
 }
+
+
+
 
 
 #endif
