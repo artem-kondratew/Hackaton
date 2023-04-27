@@ -75,4 +75,14 @@ void PiezoBeep(int PiezoPin, int Tone, int TimeON, int TimeOFF, int Count)
 }
 
 
+int LineSensorRead(int SensorPin)
+{
+  if(SensorPin < A0 || SensorPin > A3)
+    return -1;
+
+  int Data = analogRead(SensorPin);
+  return Data;
+}
+
+
 #endif
