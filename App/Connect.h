@@ -72,6 +72,7 @@ public:
     static void drop();
     static void beep();
     static void rotate(uint8_t angle);
+    static void shake();
 
     static void decodeKeyInput();
 };

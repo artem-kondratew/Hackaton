@@ -75,6 +75,7 @@
 #define CLAW_DROP_TASK          10
 #define CLAW_RISE_TASK          11
 #define BEEP_TASK               12
+#define SHAKE_TASK              13
 
 #define PING_DXL_ID             35
 #define PING_TASK        STOP_TASK

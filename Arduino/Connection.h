@@ -175,6 +175,9 @@ void Connection::findCommand() {
     if (task == BEEP_TASK) {
         return Bot::beep();
     }
+    if (task == SHAKE_TASK) {
+        return Claw::shake();
+    }
 }
 
 

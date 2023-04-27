@@ -77,7 +77,7 @@ void Claw::rise() {
 
 
 void Claw::shake() {
-    push(CLAW_MIN_ANGLE);
+    drop();
     rotateClaw(80);
     rotateClaw(140);
     rotateClaw(80);
@@ -85,7 +85,6 @@ void Claw::shake() {
     rotateClaw(80);
     rotateClaw(140);
     drop();
-    pop();
 }
 
 

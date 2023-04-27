@@ -275,6 +275,12 @@ void Connect::rotate(uint8_t angle) {
 }
 
 
+void Connect::shake() {
+    resetCommand();
+    setTask(SHAKE_TASK);
+}
+
+
 void Connect::decodeKeyInput() {
 
     if (checkNumberCommand(key_cmd.get_str()) == key_cmd.size()) {
@@ -307,6 +313,9 @@ void Connect::decodeKeyInput() {
     }
     if (key_cmd.get_str() == "drop") {
         return drop();
+    }
+    if (key_cmd.get_str() == "shake") {
+        return shake();
     }
     if (key_cmd.get_str() == "b") {
         return beep();
