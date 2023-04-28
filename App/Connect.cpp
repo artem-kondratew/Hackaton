@@ -77,6 +77,7 @@ bool Connect::setConnection() {
     }
     std::cout << "connected" << std::endl;
     sleep(1);
+    initCommandMap();
     return true;
 }
 
@@ -291,11 +292,19 @@ void Connect::shake() {
 }
 
 
-void Connect::blink(int pin) {
+void Connect::visionBlink(int pin) {
     connect_mutex.lock();
     resetCommand();
     setTask(BLINK_TASK);
     setValue(pin);
+}
+
+
+void Connect::blink() {
+    connect_mutex.lock();
+    resetCommand();
+    setTask(BLINK_TASK);
+    setValue(7);
 }
 
 
@@ -305,39 +314,36 @@ void Connect::decodeKeyInput() {
         Connect::encodeCommand(stoi(key_cmd.get_str()));
         return;
     }
-    if (key_cmd.get_str() == "stop") {
-        return stop();
-    }
-    if (key_cmd.get_str() == "push") {
-        return push();
-    }
-    if (key_cmd.get_str() == "pop") {
-        return pop();
-    }
-    if (key_cmd.get_str() == "rise") {
-        return rise();
-    }
-    if (key_cmd.get_str() == "drop") {
-        return drop();
-    }
-    if (key_cmd.get_str() == "shake") {
-        return shake();
-    }
-    if (key_cmd.get_str() == "b") {
-        return beep();
-    }
-    if (key_cmd.get_str() == "blink") {
-        return blink(7);
-    }
+
     if (key_cmd.get_str() == "start vision") {
         return Vision::start_processing();
     }
     if (key_cmd.get_str() == "stop vision") {
         return Vision::stop_processing();
     }
+    if (Vision::is_processing()) {
+        return;
+    }
+
+    if (command_map.count(key_cmd.get_str())) {
+        command_map[key_cmd.get_str()]();
+    }
+
     if (key_cmd.get_str().substr(0, 4) == "rot ") {
         if (checkNumberCommand(key_cmd.get_str().substr(4, 3))) {
             rotate(stoi(key_cmd.get_str().substr(4, 3)));
         }
     }
+}
+
+
+void Connect::initCommandMap() {
+    command_map["stop"] = stop;
+    command_map["push"] = push;
+    command_map["pop"] = pop;
+    command_map["rise"] = rise;
+    command_map["drop"] = drop;
+    command_map["shake"] = shake;
+    command_map["beep"] = beep;
+    command_map["blink"] = blink;
 }

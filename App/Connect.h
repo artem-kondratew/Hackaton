@@ -10,7 +10,9 @@
 #include <chrono>
 #include <cstring>
 #include <fcntl.h>
+#include <functional>
 #include <iostream>
+#include <map>
 #include <mutex>
 #include "ncurses.h"
 #include <string>
@@ -33,6 +35,7 @@ private:
     inline static int Arduino = open("/dev/ttyACM0", O_RDWR | O_NOCTTY | O_NONBLOCK);
     inline static uint8_t command[COMMAND_SIZE];
     inline static uint8_t message[MESSAGE_SIZE];
+    inline static std::map<std::string, std::function<void(void)>> command_map;
 
 public:
     inline static str key_cmd;
@@ -83,9 +86,13 @@ public:
     static void beep();
     static void rotate(uint8_t angle);
     static void shake();
-    static void blink(int pin);
+    static void visionBlink(int pin);
+    static void blink();
 
     static void decodeKeyInput();
+
+private:
+    static void initCommandMap();
 };
 
 

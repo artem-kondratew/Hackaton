@@ -18,6 +18,7 @@ public:
     static void processing();
     static void start_processing();
     static void stop_processing();
+    static bool is_processing();
 };
 
 

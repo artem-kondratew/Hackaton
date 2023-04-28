@@ -10,7 +10,7 @@ void Vision::processing() {
         if (!processing_flag) {
             continue;
         }
-        Connect::blink(13);
+        Connect::visionBlink(13);
         sleep(5);
     }
 }
@@ -23,4 +23,9 @@ void Vision::start_processing() {
 
 void Vision::stop_processing() {
     processing_flag = false;
+}
+
+
+bool Vision::is_processing() {
+    return processing_flag;
 }
