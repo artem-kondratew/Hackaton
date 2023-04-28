@@ -21,7 +21,7 @@
 #include "Exception.h"
 #include "Gservo.h"
 #include "str.h"
-#include "Vision.h"ig.h"
+#include "Vision.h"
 
 
 inline std::mutex connect_mutex;
