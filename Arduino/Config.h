@@ -3,9 +3,6 @@
 #define Config_h
 
 
-#include <stdint.h>
-
-
 #define SERIAL_BAUDRATE       9600
 
 #define M1_DIR                   4
@@ -18,7 +15,7 @@
 #define FORWARD                  1
 #define BACKWARD                 0
 
-#define DEFAULT_SPEED          180
+#define DEFAULT_SPEED          120
 
 #define TIMER                  100
 #define START_BYTE              64
@@ -83,7 +80,7 @@
 #define PING_VALUE2             61
 
 #define CLAW_MIN_ANGLE        35
-#define CLAW_MAX_ANGLE       180
+#define CLAW_MAX_ANGLE       150
 #define ROTATE_MIN_ANGLE       5
 #define ROTATE_MAX_ANGLE     100
 

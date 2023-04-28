@@ -7,9 +7,6 @@
 #include "Config.h"
 
 
-
-
-
 Servo claw_servo;    // Claw       D8
 Servo rotate_servo;  // Claw mover D9
 
@@ -28,11 +25,11 @@ public:
 
 
 void Claw::rotateClaw(uint8_t angle){
-    if(angle > 180) {
-        angle = 180;
+    if(angle > ROTATE_MAX_ANGLE) {
+        angle = ROTATE_MAX_ANGLE;
     }
-    if(angle < 0) {
-        angle = 0;
+    if(angle < ROTATE_MIN_ANGLE) {
+        angle = ROTATE_MIN_ANGLE;
     }
     rotate_servo.write(angle);
 }
@@ -78,12 +75,18 @@ void Claw::rise() {
 
 void Claw::shake() {
     drop();
-    rotateClaw(80);
-    rotateClaw(140);
-    rotateClaw(80);
-    rotateClaw(140);
-    rotateClaw(80);
-    rotateClaw(140);
+    push(0);
+    rotateClaw(30);
+    delay(300);
+    rotateClaw(20);
+    delay(300);
+    rotateClaw(30);
+    delay(300);
+    rotateClaw(20);
+    delay(300);
+    rotateClaw(30);
+    delay(300);
+    rotateClaw(20);
     drop();
 }
 

@@ -28,17 +28,17 @@ void Bot::init() {
 
 void Bot::moveForward(uint8_t speed) {
     digitalWrite(M1_DIR, FORWARD);
-    analogWrite(M1_PWM, speed);
+    analogWrite(M1_PWM, 150);
     digitalWrite(M2_DIR, FORWARD);
-    analogWrite(M2_PWM, speed);
+    analogWrite(M2_PWM, 150);
 }
 
 
 void Bot::moveBackward(uint8_t speed) {
     digitalWrite(M1_DIR, BACKWARD);
-    analogWrite(M1_PWM, speed);
+    analogWrite(M1_PWM, 150);
     digitalWrite(M2_DIR, BACKWARD);
-    analogWrite(M2_PWM, speed);
+    analogWrite(M2_PWM, 150);
 }
 
 

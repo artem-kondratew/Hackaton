@@ -290,18 +290,6 @@ void Connect::decodeKeyInput() {
     if (key_cmd.get_str() == "stop") {
         return stop();
     }
-    if (key_cmd.get_str() == "f") {
-        return moveForward();
-    }
-    if (key_cmd.get_str() == "b") {
-        return moveBackward();
-    }
-    if (key_cmd.get_str() == "r") {
-        return turnRight();
-    }
-    if (key_cmd.get_str() == "l") {
-        return turnLeft();
-    }
     if (key_cmd.get_str() == "push") {
         return push();
     }
