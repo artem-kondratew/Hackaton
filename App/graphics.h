@@ -125,7 +125,7 @@ void init_graphics() {
     //curs_set(0);  //  hide cursor
     keypad(stdscr, TRUE);
 
-    signal(SIGINT, sighandler);
+    //signal(SIGINT, sighandler);  moved to different thread
 
     clear();
     print_table();
@@ -237,43 +237,50 @@ void key_down_proc() {
 }
 
 
-void key_proc(int key) {
-    auto symbol = static_cast<uint8_t>(key);
-    /*if (Connect::manipulate_flag) {
-        manipulate_proc();
-    }*/
+void key_proc() {
+    while (true) {
+        int key = getch();
+        auto symbol = static_cast<uint8_t>(key);
 
-    if (key == KEY_RETURN) {
-        return key_return_proc();
-    }
-    if (key == KEY_BACKSPACE) {
-        return key_backspace_proc();
-    }
-    if (key == KEY_DC) {
-        return key_delete_proc();
-    }
-    if (key == KEY_LEFT) {
-        return key_left_proc();
-    }
-    if (key == KEY_RIGHT) {
-        return key_right_proc();
-    }
-    if (key == KEY_UP) {
-        return key_up_proc();
-    }
-    if (key == KEY_DOWN) {
-        return key_down_proc();
-    }
-    if (key == ERR) {
-        return;
-    }
+        if (key == KEY_RETURN) {
+            key_return_proc();
+            continue;
+        }
+        if (key == KEY_BACKSPACE) {
+            key_backspace_proc();
+            continue;
+        }
+        if (key == KEY_DC) {
+            key_delete_proc();
+            continue;
+        }
+        if (key == KEY_LEFT) {
+            key_left_proc();
+            continue;
+        }
+        if (key == KEY_RIGHT) {
+            key_right_proc();
+            continue;
+        }
+        if (key == KEY_UP) {
+            key_up_proc();
+            continue;
+        }
+        if (key == KEY_DOWN) {
+            key_down_proc();
+            continue;
+        }
+        if (key == ERR) {
+            continue;//return;
+        }
 
-    getsyx(CURS_Y, CURS_X);
-    Connect::key_cmd.push(symbol, CURS_X - 1);
-    clear_command_line();
-    print_command_line();
-    move(CURS_Y, Connect::key_cmd.getCurs() + 1);
-    refresh();
+        getsyx(CURS_Y, CURS_X);
+        Connect::key_cmd.push(symbol, CURS_X - 1);
+        clear_command_line();
+        print_command_line();
+        move(CURS_Y, Connect::key_cmd.getCurs() + 1);
+        refresh();
+    }
 }
 
 

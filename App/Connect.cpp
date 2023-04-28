@@ -5,6 +5,30 @@
 #include "Connect.h"
 
 
+void Connect::exchange() {
+    auto start_timer = std::chrono::system_clock::now();
+    while (true) {
+        auto end_timer = std::chrono::system_clock::now();
+        if (std::chrono::duration_cast<std::chrono::milliseconds>(end_timer - start_timer).count() > TIMER) {
+            Connect::sendCommand();
+            Connect::receiveMessage();
+            start_timer = std::chrono::system_clock::now();
+        }
+    }
+}
+
+
+void Connect::resetCommand() {
+    command[COMMAND_START_BYTE1_CELL] = START_BYTE;
+    command[COMMAND_START_BYTE2_CELL] = START_BYTE;
+    command[COMMAND_TASK1_CELL] = 0;
+    command[COMMAND_TASK2_CELL] = PING_TASK;
+    command[COMMAND_VALUE1_CELL] = PING_VALUE1;
+    command[COMMAND_VALUE2_CELL] = PING_VALUE2;
+    calcCommandCheckSum();
+}
+
+
 bool Connect::openArduino() {
     if (Arduino == -1) {
         Arduino = open("/dev/ttyACM1", O_RDWR | O_NOCTTY | O_NONBLOCK);
@@ -31,17 +55,6 @@ bool Connect::openArduino() {
     tcsetattr(Arduino,TCSANOW,&SerialPortSettings);
 
     return true;
-}
-
-
-void Connect::resetCommand() {
-    command[COMMAND_START_BYTE1_CELL] = START_BYTE;
-    command[COMMAND_START_BYTE2_CELL] = START_BYTE;
-    command[COMMAND_TASK1_CELL] = 0;
-    command[COMMAND_TASK2_CELL] = PING_TASK;
-    command[COMMAND_VALUE1_CELL] = PING_VALUE1;
-    command[COMMAND_VALUE2_CELL] = PING_VALUE2;
-    calcCommandCheckSum();
 }
 
 
@@ -117,6 +130,7 @@ void Connect::sendCommand() {
     calcCommandCheckSum();
     write(Arduino, command, COMMAND_SIZE);
     resetCommand();
+    connect_mutex.unlock();
 }
 
 
@@ -156,22 +170,6 @@ Gservo* Connect::findGservo(uint8_t id) {
 }
 
 
-void Connect::decodeMessage() {
-    Gservo* gservo = findGservo(message[MESSAGE_ID_CELL]);
-    gservo->set_goal(message[MESSAGE_GOAL1_CELL], message[MESSAGE_GOAL2_CELL]);
-    gservo->set_angle(message[MESSAGE_ANGLE1_CELL], message[MESSAGE_ANGLE2_CELL]);
-    gservo->set_speed(message[MESSAGE_SPEED1_CELL], message[MESSAGE_SPEED2_CELL]);
-    gservo->set_torque(message[MESSAGE_TORQUE1_CELL], message[MESSAGE_TORQUE2_CELL]);
-    gservo->set_is_moving(message[MESSAGE_IS_MOVING_CELL]);
-    Gservo::set_x(message[MESSAGE_X1_CELL], message[MESSAGE_X2_CELL], message[MESSAGE_X_SIGN]);
-    Gservo::set_y(message[MESSAGE_Y1_CELL], message[MESSAGE_Y2_CELL], message[MESSAGE_Y_SIGN]);
-    Gservo::set_z(message[MESSAGE_Z1_CELL], message[MESSAGE_Z2_CELL], message[MESSAGE_Z_SIGN]);
-    Gservo::set_q0(message[MESSAGE_Q01_CELL], message[MESSAGE_Q02_CELL]);
-    Gservo::set_q1(message[MESSAGE_Q11_CELL], message[MESSAGE_Q12_CELL]);
-    Gservo::set_q2(message[MESSAGE_Q21_CELL], message[MESSAGE_Q22_CELL]);
-}
-
-
 bool Connect::receiveMessage() {
     if (!openArduino()) {
         return false;
@@ -208,36 +206,42 @@ uint64_t Connect::checkNumberCommand(std::string s) {
 
 
 void Connect::stop() {
+    connect_mutex.lock();
     resetCommand();
     setTask(STOP_TASK);
 }
 
 
 void Connect::moveForward() {
+    connect_mutex.lock();
     resetCommand();
     setTask(MOVE_FORWARD_TASK);
 }
 
 
 void Connect::moveBackward() {
+    connect_mutex.lock();
     resetCommand();
     setTask(MOVE_BACKWARD_TASK);
 }
 
 
 void Connect::turnRight() {
+    connect_mutex.lock();
     resetCommand();
     setTask(TURN_RIGHT_TASK);
 }
 
 
 void Connect::turnLeft() {
+    connect_mutex.lock();
     resetCommand();
     setTask(TURN_LEFT_TASK);
 }
 
 
 void Connect::push() {
+    connect_mutex.lock();
     resetCommand();
     setTask(CLAW_PUSH_TASK);
     setValue(0);
@@ -245,30 +249,35 @@ void Connect::push() {
 
 
 void Connect::pop() {
+    connect_mutex.lock();
     resetCommand();
     setTask(CLAW_POP_TASK);
 }
 
 
 void Connect::rise() {
+    connect_mutex.lock();
     resetCommand();
     setTask(CLAW_RISE_TASK);
 }
 
 
 void Connect::drop() {
+    connect_mutex.lock();
     resetCommand();
     setTask(CLAW_DROP_TASK);
 }
 
 
 void Connect::beep() {
+    connect_mutex.lock();
     resetCommand();
     setTask(BEEP_TASK);
 }
 
 
 void Connect::rotate(uint8_t angle) {
+    connect_mutex.lock();
     resetCommand();
     setTask(CLAW_ROTATE_TASK);
     setValue(angle);
@@ -276,8 +285,17 @@ void Connect::rotate(uint8_t angle) {
 
 
 void Connect::shake() {
+    connect_mutex.lock();
     resetCommand();
     setTask(SHAKE_TASK);
+}
+
+
+void Connect::blink(int pin) {
+    connect_mutex.lock();
+    resetCommand();
+    setTask(BLINK_TASK);
+    setValue(pin);
 }
 
 
@@ -307,6 +325,15 @@ void Connect::decodeKeyInput() {
     }
     if (key_cmd.get_str() == "b") {
         return beep();
+    }
+    if (key_cmd.get_str() == "blink") {
+        return blink(7);
+    }
+    if (key_cmd.get_str() == "start vision") {
+        return Vision::start_processing();
+    }
+    if (key_cmd.get_str() == "stop vision") {
+        return Vision::stop_processing();
     }
     if (key_cmd.get_str().substr(0, 4) == "rot ") {
         if (checkNumberCommand(key_cmd.get_str().substr(4, 3))) {

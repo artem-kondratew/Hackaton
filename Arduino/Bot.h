@@ -15,6 +15,7 @@ public:
     static void turnRight();
     static void turnLeft();
     static void beep();
+    static void blink(int pin);
 };
 
 
@@ -75,7 +76,14 @@ void Bot::beep() {
 }
 
 
-
+void Bot::blink(int pin) {
+    for (int i = 0; i < 3; i++) {
+        digitalWrite(pin, HIGH);
+        delay(1000);
+        digitalWrite(pin, LOW);
+        delay(1000);
+    }
+}
 
 
 #endif

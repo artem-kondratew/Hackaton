@@ -6,10 +6,13 @@
 #define MANIPULATOR_CONNECT_H
 
 
+#include <atomic>
 #include <chrono>
 #include <cstring>
 #include <fcntl.h>
 #include <iostream>
+#include <mutex>
+#include "ncurses.h"
 #include <string>
 #include <termios.h>
 #include <unistd.h>
@@ -17,7 +20,12 @@
 #include "Exception.h"
 #include "Gservo.h"
 #include "str.h"
-#include "ncurses.h"
+#include "Vision.h"
+
+
+inline std::mutex connect_mutex;
+
+inline struct termios SerialPortSettings;
 
 
 class Connect {
@@ -29,6 +37,8 @@ private:
 public:
     inline static str key_cmd;
 
+public:
+    static void exchange();
     static void resetCommand();
 
 private:
@@ -73,12 +83,10 @@ public:
     static void beep();
     static void rotate(uint8_t angle);
     static void shake();
+    static void blink(int pin);
 
     static void decodeKeyInput();
 };
-
-
-inline struct termios SerialPortSettings;
 
 
 #endif //MANIPULATOR_CONNECT_H

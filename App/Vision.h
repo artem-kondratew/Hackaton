@@ -6,8 +6,18 @@
 #define HACKATON_VISION_H
 
 
-class Vision {
+#include <unistd.h>
+//#include <opencv2/opencv.hpp>
+#include "Connect.h"
 
+
+class Vision {
+private:
+    inline static bool processing_flag = false;
+public:
+    static void processing();
+    static void start_processing();
+    static void stop_processing();
 };
 
 

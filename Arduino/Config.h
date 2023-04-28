@@ -31,33 +31,9 @@
 
 #define MESSAGE_START_BYTE1_CELL 0
 #define MESSAGE_START_BYTE2_CELL 1
-#define MESSAGE_ID_CELL          2
-#define MESSAGE_GOAL1_CELL       3
-#define MESSAGE_GOAL2_CELL       4
-#define MESSAGE_ANGLE1_CELL      5
-#define MESSAGE_ANGLE2_CELL      6
-#define MESSAGE_SPEED1_CELL      7
-#define MESSAGE_SPEED2_CELL      8
-#define MESSAGE_TORQUE1_CELL     9
-#define MESSAGE_TORQUE2_CELL    10
-#define MESSAGE_IS_MOVING_CELL  11
-#define MESSAGE_X1_CELL         12
-#define MESSAGE_X2_CELL         13
-#define MESSAGE_X_SIGN          14
-#define MESSAGE_Y1_CELL         15
-#define MESSAGE_Y2_CELL         16
-#define MESSAGE_Y_SIGN          17
-#define MESSAGE_Z1_CELL         18
-#define MESSAGE_Z2_CELL         19
-#define MESSAGE_Z_SIGN          20
-#define MESSAGE_Q01_CELL        21
-#define MESSAGE_Q02_CELL        22
-#define MESSAGE_Q11_CELL        23
-#define MESSAGE_Q12_CELL        24
-#define MESSAGE_Q21_CELL        25
-#define MESSAGE_Q22_CELL        26
-#define MESSAGE_CHECKSUM_CELL   27
-#define MESSAGE_SIZE            28
+#define MESSAGE_ANSWER_CELL      2
+#define MESSAGE_CHECKSUM_CELL    3
+#define MESSAGE_SIZE             4
 
 #define MOVE_BACKWARD_TASK       0
 #define MOVE_FORWARD_TASK        1
@@ -73,6 +49,7 @@
 #define CLAW_RISE_TASK          11
 #define BEEP_TASK               12
 #define SHAKE_TASK              13
+#define BLINK_TASK              14
 
 #define PING_DXL_ID             35
 #define PING_TASK        STOP_TASK
