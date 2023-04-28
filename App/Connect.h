@@ -6,7 +6,6 @@
 #define MANIPULATOR_CONNECT_H
 
 
-#include <atomic>
 #include <chrono>
 #include <cstring>
 #include <fcntl.h>
@@ -22,7 +21,7 @@
 #include "Exception.h"
 #include "Gservo.h"
 #include "str.h"
-#include "Vision.h"
+#include "Vision.h"ig.h"
 
 
 inline std::mutex connect_mutex;
