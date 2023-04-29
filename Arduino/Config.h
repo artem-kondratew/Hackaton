@@ -16,6 +16,7 @@
 #define BACKWARD                 0
 
 #define DEFAULT_SPEED          120
+#define ROTATE_SPEED           120
 
 #define TIMER                  100
 #define START_BYTE              64
@@ -50,19 +51,20 @@
 #define BEEP_TASK               12
 #define SHAKE_TASK              13
 #define BLINK_TASK              14
+#define SET_SPEED_TASK          15
 
 #define PING_DXL_ID             35
 #define PING_TASK        STOP_TASK
 #define PING_VALUE1             37
 #define PING_VALUE2             61
 
-#define CLAW_MIN_ANGLE        35
-#define CLAW_MAX_ANGLE       150
-#define ROTATE_MIN_ANGLE       5
-#define ROTATE_MAX_ANGLE     100
+#define CLAW_MIN_ANGLE          35
+#define CLAW_MAX_ANGLE         150
+#define ROTATE_MIN_ANGLE         5
+#define ROTATE_MAX_ANGLE       100
 
-#define ROTATE_DEFAULT_ANGLE 100
-#define CLAW_DEFAULT_ANGLE     0
+#define ROTATE_DEFAULT_ANGLE   100
+#define CLAW_DEFAULT_ANGLE       0
 
 
 #endif

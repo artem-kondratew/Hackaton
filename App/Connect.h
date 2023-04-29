@@ -6,7 +6,6 @@
 #define MANIPULATOR_CONNECT_H
 
 
-#include <atomic>
 #include <chrono>
 #include <cstring>
 #include <fcntl.h>

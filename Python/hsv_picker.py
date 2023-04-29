@@ -9,7 +9,7 @@ def nothing(x):
 
 
 # Load image
-image = cv2.imread("images/bear.jpg")
+image = cv2.imread("bear.jpg")
 image = cv2.resize(image, (600, 800))
 
 # Create a window

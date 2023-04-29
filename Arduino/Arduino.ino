@@ -25,10 +25,6 @@ void setup() {
 }
 
 
-unsigned long end_timer = 0;
-unsigned long start_timer = 0;
-
-
 void loop() {
     Connection::receiveCommand();
 }
