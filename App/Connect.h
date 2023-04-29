@@ -6,10 +6,15 @@
 #define MANIPULATOR_CONNECT_H
 
 
+#include <atomic>
 #include <chrono>
 #include <cstring>
 #include <fcntl.h>
+#include <functional>
 #include <iostream>
+#include <map>
+#include <mutex>
+#include "ncurses.h"
 #include <string>
 #include <termios.h>
 #include <unistd.h>
@@ -17,7 +22,12 @@
 #include "Exception.h"
 #include "Gservo.h"
 #include "str.h"
-#include "ncurses.h"
+#include "Vision.h"
+
+
+inline std::mutex connect_mutex;
+
+inline struct termios SerialPortSettings;
 
 
 class Connect {
@@ -25,10 +35,13 @@ private:
     inline static int Arduino = open("/dev/ttyACM0", O_RDWR | O_NOCTTY | O_NONBLOCK);
     inline static uint8_t command[COMMAND_SIZE];
     inline static uint8_t message[MESSAGE_SIZE];
+    inline static std::map<std::string, std::function<void(void)>> command_map;
 
 public:
     inline static str key_cmd;
 
+public:
+    static void exchange();
     static void resetCommand();
 
 private:
@@ -47,7 +60,6 @@ public:
     static void sendCommand();
 
 private:
-    static void setId(uint8_t id);
     static void setTask(uint8_t task);
     static void setValue(uint16_t value);
     static void encodeCommand(uint64_t cmd);
@@ -59,7 +71,7 @@ public:
     static bool receiveMessage();
 
 private:
-    static uint64_t checkNumberCommand();
+    static uint64_t checkNumberCommand(std::string s);
 
 public:
     static void stop();
@@ -67,12 +79,21 @@ public:
     static void moveBackward();
     static void turnRight();
     static void turnLeft();
+    static void push();
+    static void pop();
+    static void rise();
+    static void drop();
+    static void beep();
+    static void rotate(uint8_t angle);
+    static void shake();
+    static void visionBlink(int pin);
+    static void blink();
 
     static void decodeKeyInput();
+
+private:
+    static void initCommandMap();
 };
-
-
-inline struct termios SerialPortSettings;
 
 
 #endif //MANIPULATOR_CONNECT_H

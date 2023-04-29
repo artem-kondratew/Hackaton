@@ -3,8 +3,10 @@
 #define Connection_h
 
 
+#include "Bot.h"
+#include "Camera.h"
+#include "Claw.h"
 #include "Config.h"
-#include "Servo.h"
 
 
 uint8_t command[COMMAND_SIZE];
@@ -66,40 +68,7 @@ void Connection::setMsgValues() {
     message[MESSAGE_START_BYTE1_CELL] = START_BYTE;
     message[MESSAGE_START_BYTE2_CELL] = START_BYTE;
     
-    message[MESSAGE_ID_CELL] = 9;
-
-    message[MESSAGE_GOAL1_CELL] = 2;
-    message[MESSAGE_GOAL1_CELL] = 3;
-
-    message[MESSAGE_ANGLE1_CELL] = 4;
-    message[MESSAGE_ANGLE2_CELL] = 5;
-
-    message[MESSAGE_SPEED1_CELL] = 6;
-    message[MESSAGE_SPEED2_CELL] = 7;
-
-    message[MESSAGE_TORQUE1_CELL] = 8;
-    message[MESSAGE_TORQUE2_CELL] = 9;
-
-    message[MESSAGE_IS_MOVING_CELL] = 10;
-
-    message[MESSAGE_X1_CELL] = 11;
-    message[MESSAGE_X2_CELL] = 12;
-    message[MESSAGE_X_SIGN] = 13;
-
-    message[MESSAGE_Y1_CELL] = 14;
-    message[MESSAGE_Y2_CELL] = 15;
-    message[MESSAGE_Y_SIGN] = 16;
-
-    message[MESSAGE_Z1_CELL] = 17;
-    message[MESSAGE_Z2_CELL] = 18;
-    message[MESSAGE_Z_SIGN] = 19;
-
-    message[MESSAGE_Q01_CELL] = 20;
-    message[MESSAGE_Q02_CELL] = 21;
-    message[MESSAGE_Q11_CELL] = 22;
-    message[MESSAGE_Q12_CELL] = 23;
-    message[MESSAGE_Q21_CELL] = 24;
-    message[MESSAGE_Q22_CELL] = 25;
+    message[MESSAGE_ANSWER_CELL] = 1;
 
     message[MESSAGE_CHECKSUM_CELL] = calcMessageCheckSum();
 }
@@ -119,12 +88,12 @@ void Connection::receiveCommand() {
         command[COMMAND_START_BYTE1_CELL] = Serial.read();
         command[COMMAND_START_BYTE2_CELL] = Serial.read();
         if (command[COMMAND_START_BYTE1_CELL] == START_BYTE && command[COMMAND_START_BYTE2_CELL] == START_BYTE) {
-            for (int cell = COMMAND_ID_CELL; cell < COMMAND_SIZE; cell++) {
+            for (int cell = COMMAND_TASK1_CELL; cell < COMMAND_SIZE; cell++) {
                 command[cell] = Serial.read();
             }
             if (!calcCommandCheckSum()) {
-                findCommand();
                 sendMessage();
+                findCommand();
             }
         }
     }
@@ -133,22 +102,52 @@ void Connection::receiveCommand() {
 
 void Connection::findCommand() {
     uint16_t value = command[COMMAND_VALUE1_CELL] * 100 + command[COMMAND_VALUE2_CELL];
-    if (command[COMMAND_TASK_CELL] == MOVE_FORWARD_TASK) {
-        return moveForward(value);
+    uint8_t task = command[COMMAND_TASK1_CELL] * 10 + command[COMMAND_TASK2_CELL];
+    if (task == MOVE_FORWARD_TASK) {
+        return Bot::moveForward(value);
     }
-    if (command[COMMAND_TASK_CELL] == MOVE_BACKWARD_TASK) {
-        return moveBackward(value);
+    if (task == MOVE_BACKWARD_TASK) {
+        return Bot::moveBackward(value);
     }
-    if (command[COMMAND_TASK_CELL] == STOP_TASK) {
-        return stop();
+    if (task == STOP_TASK) {
+        return Bot::stop();
     }
-    if (command[COMMAND_TASK_CELL] == TURN_RIGHT_TASK) {
-        return turnRight(value);
+    if (task == TURN_RIGHT_TASK) {
+        return Bot::turnRight();
     }
-    if (command[COMMAND_TASK_CELL] == TURN_LEFT_TASK) {
-        return turnLeft(value);
+    if (task == TURN_LEFT_TASK) {
+        return Bot::turnLeft();
     }
-    
+    if (task == PITCH_CAMERA_TASK) {
+        return Camera::pitch(value);
+    }
+    if (task == YAW_CAMERA_TASK) {
+        return Camera::yaw(value);
+    }
+    if (task == CLAW_PUSH_TASK) {
+        return Claw::push(value);
+    }
+    if (task == CLAW_POP_TASK) {
+        return Claw::pop();
+    }
+    if (task == CLAW_ROTATE_TASK) {
+        return Claw::rotateClaw(value);
+    }
+    if (task == CLAW_DROP_TASK) {
+        return Claw::drop();
+    }
+    if (task == CLAW_RISE_TASK) {
+        return Claw::rise();
+    }
+    if (task == BEEP_TASK) {
+        return Bot::beep();
+    }
+    if (task == SHAKE_TASK) {
+        return Claw::shake();
+    }
+    if (task == BLINK_TASK) {
+        return Bot::blink(value);
+    }
 }
 
 

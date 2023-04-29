@@ -5,6 +5,30 @@
 #include "Connect.h"
 
 
+void Connect::exchange() {
+    auto start_timer = std::chrono::system_clock::now();
+    while (true) {
+        auto end_timer = std::chrono::system_clock::now();
+        if (std::chrono::duration_cast<std::chrono::milliseconds>(end_timer - start_timer).count() > TIMER) {
+            Connect::sendCommand();
+            Connect::receiveMessage();
+            start_timer = std::chrono::system_clock::now();
+        }
+    }
+}
+
+
+void Connect::resetCommand() {
+    command[COMMAND_START_BYTE1_CELL] = START_BYTE;
+    command[COMMAND_START_BYTE2_CELL] = START_BYTE;
+    command[COMMAND_TASK1_CELL] = 0;
+    command[COMMAND_TASK2_CELL] = PING_TASK;
+    command[COMMAND_VALUE1_CELL] = PING_VALUE1;
+    command[COMMAND_VALUE2_CELL] = PING_VALUE2;
+    calcCommandCheckSum();
+}
+
+
 bool Connect::openArduino() {
     if (Arduino == -1) {
         Arduino = open("/dev/ttyACM1", O_RDWR | O_NOCTTY | O_NONBLOCK);
@@ -34,17 +58,6 @@ bool Connect::openArduino() {
 }
 
 
-void Connect::resetCommand() {
-    command[COMMAND_START_BYTE1_CELL] = START_BYTE;
-    command[COMMAND_START_BYTE2_CELL] = START_BYTE;
-    command[COMMAND_ID_CELL] = PING_DXL_ID;
-    command[COMMAND_TASK_CELL] = PING_TASK;
-    command[COMMAND_VALUE1_CELL] = PING_VALUE1;
-    command[COMMAND_VALUE2_CELL] = PING_VALUE2;
-    calcCommandCheckSum();
-}
-
-
 bool Connect::setConnection() {
     if (!openArduino()) {
         std::cout << "Unable to connect" << std::endl;
@@ -64,6 +77,7 @@ bool Connect::setConnection() {
     }
     std::cout << "connected" << std::endl;
     sleep(1);
+    initCommandMap();
     return true;
 }
 
@@ -117,16 +131,13 @@ void Connect::sendCommand() {
     calcCommandCheckSum();
     write(Arduino, command, COMMAND_SIZE);
     resetCommand();
-}
-
-
-void Connect::setId(uint8_t id) {
-    command[COMMAND_ID_CELL] = id;
+    connect_mutex.unlock();
 }
 
 
 void Connect::setTask(uint8_t task) {
-    command[COMMAND_TASK_CELL] = task;
+    command[COMMAND_TASK1_CELL] = task / 10;
+    command[COMMAND_TASK2_CELL] = task % 10;
 }
 
 
@@ -137,12 +148,8 @@ void Connect::setValue(uint16_t value) {
 
 
 void Connect::encodeCommand(uint64_t cmd) {
-    auto id = static_cast<uint8_t>(cmd / 100000);
-    setId(id);
-
-    auto task = static_cast<uint8_t>((cmd % 100000) / 10000);
+    auto task = static_cast<uint8_t>(cmd / 10000);
     setTask(task);
-
     uint16_t value = cmd % 10000;
     setValue(value);
 }
@@ -161,22 +168,6 @@ Gservo* Connect::findGservo(uint8_t id) {
     if (id == 4) {
         return &gservo4;
     }
-}
-
-
-void Connect::decodeMessage() {
-    Gservo* gservo = findGservo(message[MESSAGE_ID_CELL]);
-    gservo->set_goal(message[MESSAGE_GOAL1_CELL], message[MESSAGE_GOAL2_CELL]);
-    gservo->set_angle(message[MESSAGE_ANGLE1_CELL], message[MESSAGE_ANGLE2_CELL]);
-    gservo->set_speed(message[MESSAGE_SPEED1_CELL], message[MESSAGE_SPEED2_CELL]);
-    gservo->set_torque(message[MESSAGE_TORQUE1_CELL], message[MESSAGE_TORQUE2_CELL]);
-    gservo->set_is_moving(message[MESSAGE_IS_MOVING_CELL]);
-    Gservo::set_x(message[MESSAGE_X1_CELL], message[MESSAGE_X2_CELL], message[MESSAGE_X_SIGN]);
-    Gservo::set_y(message[MESSAGE_Y1_CELL], message[MESSAGE_Y2_CELL], message[MESSAGE_Y_SIGN]);
-    Gservo::set_z(message[MESSAGE_Z1_CELL], message[MESSAGE_Z2_CELL], message[MESSAGE_Z_SIGN]);
-    Gservo::set_q0(message[MESSAGE_Q01_CELL], message[MESSAGE_Q02_CELL]);
-    Gservo::set_q1(message[MESSAGE_Q11_CELL], message[MESSAGE_Q12_CELL]);
-    Gservo::set_q2(message[MESSAGE_Q21_CELL], message[MESSAGE_Q22_CELL]);
 }
 
 
@@ -200,12 +191,12 @@ bool Connect::receiveMessage() {
 }
 
 
-uint64_t Connect::checkNumberCommand() {
+uint64_t Connect::checkNumberCommand(std::string s) {
     uint8_t numbers[] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
     uint64_t flag = 0;
     for (int i = 0; i < key_cmd.size(); i++) {
         for (uint8_t number: numbers) {
-            if (key_cmd.get_str()[i] == number) {
+            if (s[i] == number) {
                 flag++;
                 break;
             }
@@ -216,56 +207,143 @@ uint64_t Connect::checkNumberCommand() {
 
 
 void Connect::stop() {
+    connect_mutex.lock();
     resetCommand();
-    command[COMMAND_TASK_CELL] = STOP_TASK;
+    setTask(STOP_TASK);
 }
 
 
 void Connect::moveForward() {
+    connect_mutex.lock();
     resetCommand();
-    command[COMMAND_TASK_CELL] = MOVE_FORWARD_TASK;
+    setTask(MOVE_FORWARD_TASK);
 }
 
 
 void Connect::moveBackward() {
+    connect_mutex.lock();
     resetCommand();
-    command[COMMAND_TASK_CELL] = MOVE_BACKWARD_TASK;
+    setTask(MOVE_BACKWARD_TASK);
 }
 
 
 void Connect::turnRight() {
+    connect_mutex.lock();
     resetCommand();
-    command[COMMAND_TASK_CELL] = TURN_RIGHT_TASK;
-    command[COMMAND_VALUE2_CELL] = 45;
+    setTask(TURN_RIGHT_TASK);
 }
 
 
 void Connect::turnLeft() {
+    connect_mutex.lock();
     resetCommand();
-    command[COMMAND_TASK_CELL] = TURN_LEFT_TASK;
-    command[COMMAND_VALUE2_CELL] = 45;
+    setTask(TURN_LEFT_TASK);
+}
+
+
+void Connect::push() {
+    connect_mutex.lock();
+    resetCommand();
+    setTask(CLAW_PUSH_TASK);
+    setValue(0);
+}
+
+
+void Connect::pop() {
+    connect_mutex.lock();
+    resetCommand();
+    setTask(CLAW_POP_TASK);
+}
+
+
+void Connect::rise() {
+    connect_mutex.lock();
+    resetCommand();
+    setTask(CLAW_RISE_TASK);
+}
+
+
+void Connect::drop() {
+    connect_mutex.lock();
+    resetCommand();
+    setTask(CLAW_DROP_TASK);
+}
+
+
+void Connect::beep() {
+    connect_mutex.lock();
+    resetCommand();
+    setTask(BEEP_TASK);
+}
+
+
+void Connect::rotate(uint8_t angle) {
+    connect_mutex.lock();
+    resetCommand();
+    setTask(CLAW_ROTATE_TASK);
+    setValue(angle);
+}
+
+
+void Connect::shake() {
+    connect_mutex.lock();
+    resetCommand();
+    setTask(SHAKE_TASK);
+}
+
+
+void Connect::visionBlink(int pin) {
+    connect_mutex.lock();
+    resetCommand();
+    setTask(BLINK_TASK);
+    setValue(pin);
+}
+
+
+void Connect::blink() {
+    connect_mutex.lock();
+    resetCommand();
+    setTask(BLINK_TASK);
+    setValue(7);
 }
 
 
 void Connect::decodeKeyInput() {
 
-    if (checkNumberCommand() == key_cmd.size()) {
+    if (checkNumberCommand(key_cmd.get_str()) == key_cmd.size()) {
         Connect::encodeCommand(stoi(key_cmd.get_str()));
         return;
     }
-    if (key_cmd.get_str() == "stop") {
-        return stop();
+
+    if (key_cmd.get_str() == "start vision") {
+        return Vision::start_processing();
     }
-    if (key_cmd.get_str() == "f") {
-        return moveForward();
+    if (key_cmd.get_str() == "stop vision") {
+        return Vision::stop_processing();
     }
-    if (key_cmd.get_str() == "b") {
-        return moveBackward();
+    if (Vision::is_processing()) {
+        return;
     }
-    if (key_cmd.get_str() == "r") {
-        return turnRight();
+
+    if (command_map.count(key_cmd.get_str())) {
+        command_map[key_cmd.get_str()]();
     }
-    if (key_cmd.get_str() == "l") {
-        return turnLeft();
+
+    if (key_cmd.get_str().substr(0, 4) == "rot ") {
+        if (checkNumberCommand(key_cmd.get_str().substr(4, 3))) {
+            rotate(stoi(key_cmd.get_str().substr(4, 3)));
+        }
     }
+}
+
+
+void Connect::initCommandMap() {
+    command_map["stop"] = stop;
+    command_map["push"] = push;
+    command_map["pop"] = pop;
+    command_map["rise"] = rise;
+    command_map["drop"] = drop;
+    command_map["shake"] = shake;
+    command_map["beep"] = beep;
+    command_map["blink"] = blink;
 }

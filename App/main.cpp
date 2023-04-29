@@ -1,4 +1,5 @@
 #include <chrono>
+#include <thread>
 #include "graphics.h"
 
 
@@ -9,16 +10,15 @@ int main() {
 
     init_graphics();
 
-    auto start_timer = std::chrono::system_clock::now();
-    while (true) {
+    std::thread graphics_thr(key_proc);
+    std::thread connect_thr(Connect::exchange);
+    std::thread sighandler_thr(signal, SIGINT, sighandler);
+    std::thread vision_thr(Vision::processing);
 
-        key_proc(getch());
+    graphics_thr.join();
+    connect_thr.join();
+    sighandler_thr.join();
+    vision_thr.join();
 
-        auto end_timer = std::chrono::system_clock::now();
-        if (std::chrono::duration_cast<std::chrono::milliseconds>(end_timer - start_timer).count() > int(TIMER)) {
-            Connect::sendCommand();
-            Connect::receiveMessage();
-            start_timer = std::chrono::system_clock::now();
-        }
-    }
+    finish();
 }
