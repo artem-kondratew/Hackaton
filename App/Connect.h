@@ -6,17 +6,7 @@
 #define MANIPULATOR_CONNECT_H
 
 
-#include <chrono>
-#include <cstring>
-#include <fcntl.h>
-#include <functional>
-#include <iostream>
-#include <map>
-#include <mutex>
-#include "ncurses.h"
-#include <string>
-#include <termios.h>
-#include <unistd.h>
+#include "Header.h"
 #include "../Arduino/Config.h"
 #include "Exception.h"
 #include "Gservo.h"

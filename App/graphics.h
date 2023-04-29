@@ -6,9 +6,7 @@
 #define MANIPULATOR_GRAPHICS_H
 
 
-#include <csignal>
-#include <sys/ioctl.h>
-#include <ncurses.h>
+#include "Header.h"
 #include "Connect.h"
 #include "History.h"
 
