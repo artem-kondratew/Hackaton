@@ -148,6 +148,9 @@ void Connection::findCommand() {
     if (task == BLINK_TASK) {
         return Bot::blink(value);
     }
+    if (task == SET_SPEED_TASK) {
+        return Bot::set_speed(value);
+    }
 }
 
 

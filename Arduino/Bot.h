@@ -6,9 +6,13 @@
 #include "Config.h"
 
 
+uint8_t speed = 0;
+
+
 class Bot {
 public:
     static void init();
+    static void set_speed(uint8_t _speed);
     static void moveForward(uint8_t speed);
     static void moveBackward(uint8_t speed);
     static void stop();
@@ -20,6 +24,7 @@ public:
 
 
 void Bot::init() {
+    speed = DEFAULT_SPEED;
     pinMode(M1_DIR, OUTPUT);
     pinMode(M1_PWM, OUTPUT);
     pinMode(M2_DIR, OUTPUT);
@@ -27,19 +32,24 @@ void Bot::init() {
 }
 
 
+void Bot::set_speed(uint8_t _speed) {
+    speed = _speed;
+}
+
+
 void Bot::moveForward(uint8_t speed) {
     digitalWrite(M1_DIR, FORWARD);
-    analogWrite(M1_PWM, 150);
+    analogWrite(M1_PWM, speed);
     digitalWrite(M2_DIR, FORWARD);
-    analogWrite(M2_PWM, 150);
+    analogWrite(M2_PWM, speed);
 }
 
 
 void Bot::moveBackward(uint8_t speed) {
     digitalWrite(M1_DIR, BACKWARD);
-    analogWrite(M1_PWM, 150);
+    analogWrite(M1_PWM, speed);
     digitalWrite(M2_DIR, BACKWARD);
-    analogWrite(M2_PWM, 150);
+    analogWrite(M2_PWM, speed);
 }
 
 
@@ -51,17 +61,17 @@ void Bot::stop() {
 
 void Bot::turnRight() {
     digitalWrite(M1_DIR, BACKWARD);
-    analogWrite(M1_PWM, DEFAULT_SPEED);
+    analogWrite(M1_PWM, ROTATE_SPEED);
     digitalWrite(M2_DIR, FORWARD);
-    analogWrite(M2_PWM, DEFAULT_SPEED);
+    analogWrite(M2_PWM, ROTATE_SPEED);
 }
 
 
 void Bot::turnLeft() {
     digitalWrite(M1_DIR, FORWARD);
-    analogWrite(M1_PWM, DEFAULT_SPEED);
+    analogWrite(M1_PWM, ROTATE_SPEED);
     digitalWrite(M2_DIR, BACKWARD);
-    analogWrite(M2_PWM, DEFAULT_SPEED);
+    analogWrite(M2_PWM, ROTATE_SPEED);
 }
 
 
