@@ -6,7 +6,7 @@
 #define MANIPULATOR_CONNECT_H
 
 
-#include "Header.h"
+#include "header.h"
 #include "../Arduino/Config.h"
 #include "Exception.h"
 #include "Gservo.h"

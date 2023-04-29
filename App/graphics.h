@@ -6,7 +6,7 @@
 #define MANIPULATOR_GRAPHICS_H
 
 
-#include "Header.h"
+#include "header.h"
 #include "Connect.h"
 #include "History.h"
 
