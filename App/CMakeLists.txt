@@ -7,6 +7,8 @@ add_executable(Hackaton main.cpp ../Arduino/Config.h graphics.h Connect.h Connec
 
 target_link_libraries(${PROJECT_NAME} ncurses)
 
+set(CMAKE_CXX_FLAGS "-pthread")
+
 find_package(OpenCV REQUIRED)
 include_directories(${OpenCV_INCLUDE_DIRS})
 target_link_libraries(Hackaton ${OpenCV_LIBS})
