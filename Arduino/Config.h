@@ -10,6 +10,8 @@
 #define M2_DIR                   7
 #define M2_PWM                   6
 
+#define BEEP_PIN                A1
+
 #define LEFT                     0
 #define RIGHT                    1
 #define FORWARD                  1
@@ -19,6 +21,8 @@
 #define ROTATE_SPEED           120
 
 #define TIMER                  100
+#define BLINK_TIMER            200
+#define BEEP_TIMER             500
 #define START_BYTE              64
 
 #define COMMAND_START_BYTE1_CELL 0
@@ -53,10 +57,10 @@
 #define BLINK_TASK              14
 #define SET_SPEED_TASK          15
 
-#define PING_DXL_ID             35
+#define PING_DXL_ID              0
 #define PING_TASK        STOP_TASK
-#define PING_VALUE1             37
-#define PING_VALUE2             61
+#define PING_VALUE1              0
+#define PING_VALUE2              0
 
 #define CLAW_MIN_ANGLE          35
 #define CLAW_MAX_ANGLE         150

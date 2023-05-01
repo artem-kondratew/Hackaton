@@ -75,7 +75,6 @@ public:
     static void beep();
     static void rotate(uint8_t angle);
     static void shake();
-    static void visionBlink(int pin);
     static void blink();
 
     static void decodeKeyInput();

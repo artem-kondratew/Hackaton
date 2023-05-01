@@ -8,6 +8,12 @@
 
 uint8_t speed = 0;
 
+uint8_t beep_count;
+bool beep_flag = false;
+
+uint8_t blink_count;
+bool blink_flag = false;
+
 
 class Bot {
 public:
@@ -18,8 +24,8 @@ public:
     static void stop();
     static void turnRight();
     static void turnLeft();
-    static void beep();
-    static void blink(int pin);
+    static void beep(bool start=false);
+    static void blink(bool start=false);
 };
 
 
@@ -75,24 +81,38 @@ void Bot::turnLeft() {
 }
 
 
-void Bot::beep() {
-  for(int i = 0; i < 3; i++)
-  {
-    tone(A1, 3000);
-    delay(500);
-    noTone(A1);
-    delay(500);
-  }
+void Bot::beep(bool start=false) {
+    if (beep_count == 0) {
+        if (start) {
+            beep_count = 5;
+            beep_flag = !beep_flag;
+            tone(A1, 3000);
+        }
+        return;
+    }
+    beep_flag = !beep_flag;
+    if (beep_flag) {
+        tone(A1, 3000);
+    }
+    else {
+        noTone(A1);
+    }
+    beep_count--;
 }
 
 
-void Bot::blink(int pin) {
-    for (int i = 0; i < 3; i++) {
-        digitalWrite(pin, HIGH);
-        delay(1000);
-        digitalWrite(pin, LOW);
-        delay(1000);
+void Bot::blink(bool start=false) {
+    if (blink_count == 0) {
+        if (start) {
+            blink_count = 5;
+            blink_flag = !blink_flag;
+            digitalWrite(LED_BUILTIN, blink_flag);
+        }
+        return;
     }
+    blink_flag = !blink_flag;
+    digitalWrite(LED_BUILTIN, blink_flag);
+    blink_count--;
 }
 
 

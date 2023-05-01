@@ -292,19 +292,10 @@ void Connect::shake() {
 }
 
 
-void Connect::visionBlink(int pin) {
-    connect_mutex.lock();
-    resetCommand();
-    setTask(BLINK_TASK);
-    setValue(pin);
-}
-
-
 void Connect::blink() {
     connect_mutex.lock();
     resetCommand();
     setTask(BLINK_TASK);
-    setValue(7);
 }
 
 
