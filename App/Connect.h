@@ -25,6 +25,7 @@ private:
     inline static uint8_t command[COMMAND_SIZE];
     inline static uint8_t message[MESSAGE_SIZE];
     inline static std::map<std::string, std::function<void(void)>> command_map;
+    inline static std::map<std::string, std::function<void(void)>> imp_command_map;
 
 public:
     inline static str key_cmd;
@@ -80,6 +81,7 @@ public:
     static void decodeKeyInput();
 
 private:
+    static void initImportantCommandMap();
     static void initCommandMap();
 };
 
