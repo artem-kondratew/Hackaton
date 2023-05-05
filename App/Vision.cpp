@@ -10,8 +10,6 @@ void Vision::processing() {
         if (!processing_flag) {
             continue;
         }
-        Connect::visionBlink(13);
-        sleep(5);
     }
 }
 

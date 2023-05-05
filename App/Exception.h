@@ -6,7 +6,7 @@
 #define MANIPULATOR_EXCEPTION_H
 
 
-#include <string>
+#include "header.h"
 
 
 class Exception : std::exception {

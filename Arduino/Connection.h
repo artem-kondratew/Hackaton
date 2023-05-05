@@ -140,13 +140,13 @@ void Connection::findCommand() {
         return Claw::rise();
     }
     if (task == BEEP_TASK) {
-        return Bot::beep();
+        return Bot::beep(true);
     }
     if (task == SHAKE_TASK) {
         return Claw::shake();
     }
     if (task == BLINK_TASK) {
-        return Bot::blink(value);
+        return Bot::blink(true);
     }
     if (task == SET_SPEED_TASK) {
         return Bot::set_speed(value);

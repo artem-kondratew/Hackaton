@@ -76,8 +76,9 @@ bool Connect::setConnection() {
         }
     }
     std::cout << "connected" << std::endl;
-    sleep(1);
+    initImportantCommandMap();
     initCommandMap();
+    sleep(1);
     return true;
 }
 
@@ -292,19 +293,10 @@ void Connect::shake() {
 }
 
 
-void Connect::visionBlink(int pin) {
-    connect_mutex.lock();
-    resetCommand();
-    setTask(BLINK_TASK);
-    setValue(pin);
-}
-
-
 void Connect::blink() {
     connect_mutex.lock();
     resetCommand();
     setTask(BLINK_TASK);
-    setValue(7);
 }
 
 
@@ -315,25 +307,30 @@ void Connect::decodeKeyInput() {
         return;
     }
 
-    if (key_cmd.get_str() == "start vision") {
-        return Vision::start_processing();
-    }
-    if (key_cmd.get_str() == "stop vision") {
-        return Vision::stop_processing();
+    if (imp_command_map.count(key_cmd.get_str())) {
+        return imp_command_map[key_cmd.get_str()]();
     }
     if (Vision::is_processing()) {
         return;
     }
 
     if (command_map.count(key_cmd.get_str())) {
-        command_map[key_cmd.get_str()]();
+        return command_map[key_cmd.get_str()]();
     }
 
     if (key_cmd.get_str().substr(0, 4) == "rot ") {
         if (checkNumberCommand(key_cmd.get_str().substr(4, 3))) {
-            rotate(stoi(key_cmd.get_str().substr(4, 3)));
+            return rotate(stoi(key_cmd.get_str().substr(4, 3)));
         }
     }
+}
+
+
+void Connect::initImportantCommandMap() {
+    imp_command_map["start vision"] = Vision::start_processing;
+    imp_command_map["stop vision"] = Vision::stop_processing;
+    imp_command_map["beep"] = Connect::beep;
+    imp_command_map["blink"] = Connect::blink;
 }
 
 
@@ -344,6 +341,4 @@ void Connect::initCommandMap() {
     command_map["rise"] = rise;
     command_map["drop"] = drop;
     command_map["shake"] = shake;
-    command_map["beep"] = beep;
-    command_map["blink"] = blink;
 }
