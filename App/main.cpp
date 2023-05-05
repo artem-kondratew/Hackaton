@@ -7,6 +7,8 @@ int main() {
         finish();
     }
 
+    Vision::init();
+    sleep(1);
     init_graphics();
 
     std::thread graphics_thr(key_proc);

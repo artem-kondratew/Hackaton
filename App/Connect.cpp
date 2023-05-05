@@ -78,7 +78,6 @@ bool Connect::setConnection() {
     std::cout << "connected" << std::endl;
     initImportantCommandMap();
     initCommandMap();
-    sleep(1);
     return true;
 }
 

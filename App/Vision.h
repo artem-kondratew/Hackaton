@@ -12,8 +12,11 @@
 
 class Vision {
 private:
+    inline static cv::VideoCapture cap;
+    inline static cv::VideoWriter writer;
     inline static bool processing_flag = false;
 public:
+    static void init();
     static void processing();
     static void start_processing();
     static void stop_processing();
