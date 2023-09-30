@@ -68,7 +68,40 @@ void Connection::setMsgValues() {
     message[MESSAGE_START_BYTE1_CELL] = START_BYTE;
     message[MESSAGE_START_BYTE2_CELL] = START_BYTE;
     
-    message[MESSAGE_ANSWER_CELL] = 1;
+    message[MESSAGE_ID_CELL] = 9;
+
+    message[MESSAGE_GOAL1_CELL] = 2;
+    message[MESSAGE_GOAL1_CELL] = 3;
+
+    message[MESSAGE_ANGLE1_CELL] = 4;
+    message[MESSAGE_ANGLE2_CELL] = 5;
+
+    message[MESSAGE_SPEED1_CELL] = 6;
+    message[MESSAGE_SPEED2_CELL] = 7;
+
+    message[MESSAGE_TORQUE1_CELL] = 8;
+    message[MESSAGE_TORQUE2_CELL] = 9;
+
+    message[MESSAGE_IS_MOVING_CELL] = 10;
+
+    message[MESSAGE_X1_CELL] = 11;
+    message[MESSAGE_X2_CELL] = 12;
+    message[MESSAGE_X_SIGN] = 13;
+
+    message[MESSAGE_Y1_CELL] = 14;
+    message[MESSAGE_Y2_CELL] = 15;
+    message[MESSAGE_Y_SIGN] = 16;
+
+    message[MESSAGE_Z1_CELL] = 17;
+    message[MESSAGE_Z2_CELL] = 18;
+    message[MESSAGE_Z_SIGN] = 19;
+
+    message[MESSAGE_Q01_CELL] = 20;
+    message[MESSAGE_Q02_CELL] = 21;
+    message[MESSAGE_Q11_CELL] = 22;
+    message[MESSAGE_Q12_CELL] = 23;
+    message[MESSAGE_Q21_CELL] = 24;
+    message[MESSAGE_Q22_CELL] = 25;
 
     message[MESSAGE_CHECKSUM_CELL] = calcMessageCheckSum();
 }
@@ -92,8 +125,8 @@ void Connection::receiveCommand() {
                 command[cell] = Serial.read();
             }
             if (!calcCommandCheckSum()) {
-                sendMessage();
                 findCommand();
+                sendMessage();
             }
         }
     }
@@ -138,18 +171,6 @@ void Connection::findCommand() {
     }
     if (task == CLAW_RISE_TASK) {
         return Claw::rise();
-    }
-    if (task == BEEP_TASK) {
-        return Bot::beep(true);
-    }
-    if (task == SHAKE_TASK) {
-        return Claw::shake();
-    }
-    if (task == BLINK_TASK) {
-        return Bot::blink(true);
-    }
-    if (task == SET_SPEED_TASK) {
-        return Bot::set_speed(value);
     }
 }
 

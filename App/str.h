@@ -6,7 +6,9 @@
 #define MANIPULATOR_STR_H
 
 
-#include "header.h"
+#include <iostream>
+#include <utility>
+#include <cstring>
 
 
 class str {

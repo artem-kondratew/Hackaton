@@ -4,7 +4,15 @@
 
 
 #include <Servo.h>
-#include "Config.h"
+
+
+#define CLAW_MIN_ANGLE        35
+#define CLAW_MAX_ANGLE       180
+#define ROTATE_MIN_ANGLE       5
+#define ROTATE_MAX_ANGLE     100
+
+#define ROTATE_DEFAULT_ANGLE 100
+#define CLAW_DEFAULT_ANGLE     0
 
 
 Servo claw_servo;    // Claw       D8
@@ -20,16 +28,15 @@ public:
     static void init();
     static void drop();
     static void rise();
-    static void shake();
 };
 
 
 void Claw::rotateClaw(uint8_t angle){
-    if(angle > ROTATE_MAX_ANGLE) {
-        angle = ROTATE_MAX_ANGLE;
+    if(angle > 180) {
+        angle = 180;
     }
-    if(angle < ROTATE_MIN_ANGLE) {
-        angle = ROTATE_MIN_ANGLE;
+    if(angle < 0) {
+        angle = 0;
     }
     rotate_servo.write(angle);
 }
@@ -70,24 +77,6 @@ void Claw::drop() {
 
 void Claw::rise() {
     rotateClaw(ROTATE_MAX_ANGLE);
-}
-
-
-void Claw::shake() {
-    drop();
-    push(0);
-    rotateClaw(30);
-    delay(300);
-    rotateClaw(20);
-    delay(300);
-    rotateClaw(30);
-    delay(300);
-    rotateClaw(20);
-    delay(300);
-    rotateClaw(30);
-    delay(300);
-    rotateClaw(20);
-    drop();
 }
 
 

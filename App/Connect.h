@@ -6,17 +6,18 @@
 #define MANIPULATOR_CONNECT_H
 
 
-#include "header.h"
+#include <chrono>
+#include <cstring>
+#include <fcntl.h>
+#include <iostream>
+#include <string>
+#include <termios.h>
+#include <unistd.h>
 #include "../Arduino/Config.h"
 #include "Exception.h"
 #include "Gservo.h"
 #include "str.h"
-#include "Vision.h"
-
-
-inline std::mutex connect_mutex;
-
-inline struct termios SerialPortSettings;
+#include "ncurses.h"
 
 
 class Connect {
@@ -24,14 +25,10 @@ private:
     inline static int Arduino = open("/dev/ttyACM0", O_RDWR | O_NOCTTY | O_NONBLOCK);
     inline static uint8_t command[COMMAND_SIZE];
     inline static uint8_t message[MESSAGE_SIZE];
-    inline static std::map<std::string, std::function<void(void)>> command_map;
-    inline static std::map<std::string, std::function<void(void)>> imp_command_map;
 
 public:
     inline static str key_cmd;
 
-public:
-    static void exchange();
     static void resetCommand();
 
 private:
@@ -61,7 +58,7 @@ public:
     static bool receiveMessage();
 
 private:
-    static uint64_t checkNumberCommand(std::string s);
+    static uint64_t checkNumberCommand();
 
 public:
     static void stop();
@@ -73,17 +70,12 @@ public:
     static void pop();
     static void rise();
     static void drop();
-    static void beep();
-    static void rotate(uint8_t angle);
-    static void shake();
-    static void blink();
 
     static void decodeKeyInput();
-
-private:
-    static void initImportantCommandMap();
-    static void initCommandMap();
 };
+
+
+inline struct termios SerialPortSettings;
 
 
 #endif //MANIPULATOR_CONNECT_H

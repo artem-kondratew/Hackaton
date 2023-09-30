@@ -6,7 +6,9 @@
 #define HELLO_WORLD_LIST_H
 
 
-#include "header.h"
+#include <cstdint>
+#include <iostream>
+#include <utility>
 #include "Exception.h"
 #include "str.h"
 
