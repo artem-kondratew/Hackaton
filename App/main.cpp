@@ -1,4 +1,4 @@
-#include "header.h"
+#include <chrono>
 #include "graphics.h"
 
 
@@ -7,19 +7,18 @@ int main() {
         finish();
     }
 
-    Vision::init();
-    sleep(1);
     init_graphics();
 
-    std::thread graphics_thr(key_proc);
-    std::thread connect_thr(Connect::exchange);
-    std::thread sighandler_thr(signal, SIGINT, sighandler);
-    std::thread vision_thr(Vision::processing);
+    auto start_timer = std::chrono::system_clock::now();
+    while (true) {
 
-    graphics_thr.join();
-    connect_thr.join();
-    sighandler_thr.join();
-    vision_thr.join();
+        key_proc(getch());
 
-    finish();
+        auto end_timer = std::chrono::system_clock::now();
+        if (std::chrono::duration_cast<std::chrono::milliseconds>(end_timer - start_timer).count() > int(TIMER)) {
+            Connect::sendCommand();
+            Connect::receiveMessage();
+            start_timer = std::chrono::system_clock::now();
+        }
+    }
 }

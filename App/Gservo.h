@@ -6,7 +6,7 @@
 #define MANIPULATOR_GSERVO_H
 
 
-#include "header.h"
+#include <cstdint>
 
 
 class Gservo {
