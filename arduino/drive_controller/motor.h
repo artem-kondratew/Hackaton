@@ -210,8 +210,8 @@ void Motor::callback(uint8_t* msg) {
         return resetMotors();
     }
     
-    memcpy(cmd_vels + 0, msg + CMD_VEL0_IDX, CMD_VEL_SIZE);
-    memcpy(cmd_vels + 1, msg + CMD_VEL1_IDX, CMD_VEL_SIZE);
+    memcpy(cmd_vels + 0, msg + CMD_VEL0_IDX, sizeof(float));
+    memcpy(cmd_vels + 1, msg + CMD_VEL1_IDX, sizeof(float));
     
     memcpy(&kp, msg + CMD_KP_IDX, sizeof(float));
     memcpy(&ki, msg + CMD_KI_IDX, sizeof(float));

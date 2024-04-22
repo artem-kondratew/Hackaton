@@ -14,7 +14,7 @@
 #define MOTOR_0_ENCA          2 // YELLOW
 #define MOTOR_1_ENCA          3
 
-#define TPR             329.9125
+#define TPR            329.9125
 
 #define SERIAL_BAUDRATE 2000000
 #define START_BYTE           64
@@ -30,10 +30,6 @@
 #define KD_IDX                7
 #define KI_IDX               11
 
-#define KP_SIZE               4
-#define KD_SIZE               4
-#define KI_SIZE               4
-
 #define POSE0_IDX             2
 #define POSE1_IDX            10
 #define VEL0_IDX             18
@@ -47,8 +43,6 @@
 #define CMD_KI_IDX           14
 #define CMD_KD_IDX           18
 #define CMD_RESET_IDX        22
-
-#define CMD_VEL_SIZE          4
 
 
 #endif // DRIVE_CONTROLLER_CONFIG_H
