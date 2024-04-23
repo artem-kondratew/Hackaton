@@ -1,6 +1,6 @@
 from setuptools import find_packages, setup
 
-package_name = 'angle_control'
+package_name = 'hmi_control'
 
 setup(
     name=package_name,
@@ -15,12 +15,12 @@ setup(
     zip_safe=True,
     maintainer='eddyswens',
     maintainer_email='pyhalof.egor@yandex.ru',
-    description='Package to control robot~s angles',
+    description='Package to control robot',
     license='TODO: License declaration',
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'angle_control_node = angle_control.angle_control_node:main'
+            'hmi_control_node = hmi_control.hmi_control_node:main'
         ],
     },
 )
