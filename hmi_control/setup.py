@@ -20,7 +20,7 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'hmi_control_node = hmi_control.hmi_control_node:main'
+            'hmi_control = hmi_control.hmi_control:main'
         ],
     },
 )

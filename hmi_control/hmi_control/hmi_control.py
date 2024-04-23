@@ -19,10 +19,15 @@ pub_cam_topic = config["pub_cam_topic"]
 pub_grip_topic = config["pub_grip_topic"]
 pub_task_topic = config["pub_task_topic"]
 
-MAX_CAM_ANGLE = config["max_cam_angle"]
-MIN_CAM_ANGLE = config["min_cam_angle"]
-MAX_GRIP_ANGLE = config["max_grip_angle"]
-MIN_GRIP_ANGLE = config["min_grip_angle"]
+MAX_CAM_V_ANGLE = config["max_cam_v_angle"]
+MIN_CAM_V_ANGLE = config["min_cam_v_angle"]
+MAX_CAM_H_ANGLE = config["max_cam_h_angle"]
+MIN_CAM_H_ANGLE = config["min_cam_h_angle"]
+
+MAX_GRIP_V_ANGLE = config["max_grip_v_angle"]
+MIN_GRIP_V_ANGLE = config["min_grip_v_angle"]
+MAX_GRIP_H_ANGLE = config["max_grip_h_angle"]
+MIN_GRIP_H_ANGLE = config["min_grip_h_angle"]
 
 
 msg = """
@@ -43,8 +48,8 @@ a/s : decrease/increase vertical angle by 5
 d/f : decrease/increase horizontal angle by 5
 ---------------------------
 Gripper Control:
-r/t : increase/decrease vertical angle by 5
-y/u : increase/decrease horizontal angle by 5
+r/t : decrease/increase vertical angle by 5
+y/u : decrease/increase horizontal angle by 5
 ---------------------------
 Task Control:
 1-4 : choose required number of task
@@ -60,7 +65,8 @@ moveBindings = {
     'i': (1, 0, 0, 0),
     'j': (0, 0, 0, 1),
     'l': (0, 0, 0, -1),
-    ',': (-1, 0, 0, 0)
+    ',': (-1, 0, 0, 0),
+    'k': (0, 0, 0, 0)
 }
 
 speedBindings = {
@@ -69,21 +75,21 @@ speedBindings = {
     'w': (1.1, 1),
     'x': (.9, 1),
     'e': (1, 1.1),
-    'c': (1, .9),
+    'c': (1, .9)
 }
 
 cameraBindings = {
-    'r': (5, 0),
-    'f': (-5, 0),
-    'e': (0, 5),
-    'q': (0, -5),
+    's': (5, 0),
+    'a': (-5, 0),
+    'f': (0, 5),
+    'd': (0, -5)
 }
 
 gripperBindings = {
-    'w': (5, 0),
-    's': (-5, 0),
-    'd': (0, 5),
-    'a': (0, -5),
+    't': (5, 0),
+    'r': (-5, 0),
+    'u': (0, 5),
+    'y': (0, -5)
 }
 
 taskBindings = {"1", "2", "3", "4"}
@@ -116,7 +122,7 @@ def main():
 
     rclpy.init()
 
-    node = rclpy.create_node('hmi_control_node')
+    node = rclpy.create_node('hmi_control')
 
     pub_cam = node.create_publisher(OmegaAngles, pub_cam_topic, 10)
     pub_grip = node.create_publisher(OmegaAngles, pub_grip_topic, 10)
@@ -192,15 +198,15 @@ def main():
                 camera_vert += cameraBindings[key][0]
                 camera_horiz += cameraBindings[key][1]
 
-                if camera_vert < MIN_CAM_ANGLE:
-                    camera_vert = MIN_CAM_ANGLE
-                if camera_vert > MAX_CAM_ANGLE:
-                    camera_vert = MAX_CAM_ANGLE
+                if camera_vert < MIN_CAM_V_ANGLE:
+                    camera_vert = MIN_CAM_V_ANGLE
+                if camera_vert > MAX_CAM_V_ANGLE:
+                    camera_vert = MAX_CAM_V_ANGLE
 
-                if camera_horiz < MIN_GRIP_ANGLE:
-                    camera_horiz = MIN_GRIP_ANGLE
-                if camera_horiz > MAX_GRIP_ANGLE:
-                    camera_horiz = MAX_GRIP_ANGLE
+                if camera_horiz < MIN_CAM_H_ANGLE:
+                    camera_horiz = MIN_CAM_H_ANGLE
+                if camera_horiz > MAX_CAM_H_ANGLE:
+                    camera_horiz = MAX_CAM_H_ANGLE
                 
                 camera_msg.vert_angle = camera_vert
                 camera_msg.horiz_angle = camera_horiz
@@ -216,15 +222,15 @@ def main():
                 gripper_vert += gripperBindings[key][0]
                 gripper_horiz += gripperBindings[key][1]
 
-                if gripper_vert < 0:
-                    gripper_vert = 0
-                if gripper_vert > 255:
-                    gripper_vert = 255
+                if gripper_vert < MIN_GRIP_V_ANGLE:
+                    gripper_vert = MIN_GRIP_V_ANGLE
+                if gripper_vert > MAX_GRIP_V_ANGLE:
+                    gripper_vert = MAX_GRIP_V_ANGLE
 
-                if gripper_horiz < 0:
-                    gripper_horiz = 0
-                if gripper_horiz > 255:
-                    gripper_horiz = 255
+                if gripper_horiz < MIN_GRIP_H_ANGLE:
+                    gripper_horiz = MIN_GRIP_H_ANGLE
+                if gripper_horiz > MAX_GRIP_H_ANGLE:
+                    gripper_horiz = MAX_GRIP_V_ANGLE
 
                 gripper_msg.vert_angle = gripper_vert
                 gripper_msg.horiz_angle = gripper_horiz
