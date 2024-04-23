@@ -4,17 +4,12 @@
 
 const uint8_t MOTORS = 2;
 
-int64_t msg_poses[MOTORS];
-float msg_vels[MOTORS];
-float msg_targets[MOTORS];
-
 float cmd_vels[MOTORS];
 
-bool state = false;
-
-float kp = 1;
-float ki = 0;
-float kd = 0;
+#define M0_DIR 7
+#define M0_PWM 6
+#define M1_DIR 4
+#define M1_PWM 5
 
 
 class Motor {
@@ -36,8 +31,6 @@ public:
     void set_cmd_vel(float cmd_vel);
     
     static void setVelocities(float* vels);
-
-    static void callback(uint8_t* msg);
 };
 
 
@@ -76,18 +69,6 @@ void Motor::spinMotors() {
 void Motor::set_cmd_vel(float cmd_vel) {
     cmd_vel_ = cmd_vel > 255 ? 255 : cmd_vel;
     cmd_vel_ = cmd_vel_ < -255 ? -255 : cmd_vel_;
-}
-
-
-void Motor::callback(uint8_t* msg) {
-    uint8_t reset = 0;
-    memcpy(&reset, msg + CMD_RESET_IDX, sizeof(uint8_t));
-    
-    memcpy(cmd_vels + 0, msg + CMD_VEL0_IDX, sizeof(float));
-    memcpy(cmd_vels + 1, msg + CMD_VEL1_IDX, sizeof(float));
-
-    motor0.set_cmd_vel(cmd_vels[0]);
-    motor1.set_cmd_vel(cmd_vels[1]);
 }
 
 
