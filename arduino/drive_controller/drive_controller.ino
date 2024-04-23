@@ -1,5 +1,7 @@
 #include "serial.h"
+#include "camera.h"
 #include "config.h"
+#include "gripper.h"
 #include "motor.h"
 
 
@@ -14,11 +16,6 @@ void serial::set_callbacks() {
 void setup() {    
     pinMode(LED_BUILTIN, OUTPUT);
     digitalWrite(LED_BUILTIN, LOW);
-
-    pinMode(A0, OUTPUT);
-    analogWrite(A0, 255);
-
-    Motor::init();
 
     serial::init();
 

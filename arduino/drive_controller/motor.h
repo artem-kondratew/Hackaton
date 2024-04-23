@@ -19,36 +19,16 @@ float kd = 0;
 
 class Motor {
 private:
-    uint8_t enca_;
-    uint8_t encb_;
-    uint8_t f_pin_;
-    uint8_t b_pin_;
-
-    volatile int64_t pose_;
-    float target_;
+    uint8_t dir_;
+    uint8_t pwm_;
     float cmd_vel_;
-    float velocity_;
-    uint64_t prev_time_;
-    int64_t prev_pose_;
-
-    int8_t encoder_inc_;
-
-    float e_prev_;
-    float e_integral_;
 
 public:
-    Motor(uint8_t enca, uint8_t encb, uint8_t f_pin, uint8_t b_pin);
+    Motor(uint8_t dir, uint8_t pwm);
     ~Motor() = default;
 
-private:
-    static void readEncoder(const uint8_t encb, int64_t* pose, const int8_t encoder_inc);
-
 public:
-    static void init();
-
     void setPwm(uint8_t dir, uint8_t pwm);
-
-    float pid(float dt, float kp, float ki, float kd);
     
     void spin();
     static void spinMotors();
@@ -57,165 +37,54 @@ public:
     
     static void setVelocities(float* vels);
 
-    void reset();
-    static void resetMotors();
-
     static void callback(uint8_t* msg);
 };
 
 
-Motor motor0(MOTOR_0_ENCA, MOTOR_0_ENCB, MOTOR_0_F_PIN, MOTOR_0_B_PIN);
-Motor motor1(MOTOR_1_ENCA, MOTOR_1_ENCB, MOTOR_1_F_PIN, MOTOR_1_B_PIN);
+Motor motor0(M0_DIR, M0_PWM);
+Motor motor1(M1_DIR, M1_PWM);
 
 
-Motor::Motor(uint8_t enca, uint8_t encb, uint8_t f_pin, uint8_t b_pin) {
-    enca_ = enca;
-    encb_ = encb;
-    f_pin_ = f_pin;
-    b_pin_ = b_pin;
+Motor::Motor(uint8_t dir, uint8_t pwm) {
+    dir_ = dir;
+    pwm_ = pwm;
 
-    pinMode(enca_, INPUT);
-    pinMode(encb_, INPUT);
-    
-    pinMode(f_pin_, OUTPUT);
-    pinMode(b_pin_, OUTPUT);
-
-    reset();
-
-    encoder_inc_ = (encb_ == MOTOR_0_ENCB) ? 1 : -1;
-
-    e_prev_ = 0;
-    e_integral_ = 0;
-
-    prev_time_  = micros();
-}
-
-
-void Motor::readEncoder(uint8_t encb, int64_t* pose, int8_t encoder_inc) {    
-    if (digitalRead(encb) > 0) {
-        *pose += encoder_inc;
-    }
-    else {
-        *pose -= encoder_inc;
-    }
-}
-
-
-void Motor::init() {
-    attachInterrupt(digitalPinToInterrupt(motor0.enca_), [] () {readEncoder(motor0.encb_, &motor0.pose_, motor0.encoder_inc_);}, RISING);
-    attachInterrupt(digitalPinToInterrupt(motor1.enca_), [] () {readEncoder(motor1.encb_, &motor1.pose_, motor1.encoder_inc_);}, RISING);
+    pinMode(dir_, OUTPUT);
+    pinMode(pwm_, OUTPUT);
 }
 
 
 void Motor::setPwm(uint8_t dir, uint8_t pwm) {
-    if (dir == 1) {
-        analogWrite(b_pin_, LOW);
-        analogWrite(f_pin_, pwm);
-    }
-    else {
-        analogWrite(f_pin_, LOW);
-        analogWrite(b_pin_, pwm);
-    }
-}
-
-
-float Motor::pid(float dt, float kp, float ki, float kd) {    
-    float e = float(pose_ - target_);
-
-    float P = e;
-    e_integral_ += e * dt;
-    float I = e_integral_;
-    float D = (e - e_prev_) / dt;
-
-    e_prev_ = e;
-
-    float u = (kp * P + ki * I + kd * D);
-    
-    return u;
+    digitalWrite(dir_, dir);
+    analogWrite(pwm_, pwm);
 }
 
 
 void Motor::spin() {
-    
-    uint64_t curr_time = micros();
-    float dt = (curr_time - prev_time_) / 1.0e6;
-
-    velocity_ = 2 * 3.14 * (pose_ - prev_pose_) / dt / TPR;
-
-    if (false) {
-        setPwm(0, 0);
-    }
-    else {
-        float n = cmd_vel_ / 2 / 3.14;
-
-        float position_change = n * dt * TPR;
-
-        target_ += position_change;
-    
-        float u = pid(dt, kp, ki, kd);
-    
-        uint8_t pwm = (uint8_t)fabs(u);
-        pwm = pwm > 255 ? 255 : pwm;
-        // pwm = pwm < 40 ? 0 : pwm;
-
-        int dir = u < 0 ? 1 : 0;
-    
-        setPwm(dir, pwm);
-    }
-
-    prev_time_ = micros();
-    prev_pose_ = pose_;
+    uint8_t pwm = abs(cmd_vel_);
+    int dir = cmd_vel_ < 0 ? 0 : 1;
+    setPwm(dir, pwm);
 }
 
 
 void Motor::spinMotors() {
     motor0.spin();
     motor1.spin();
-    msg_poses[0] = motor0.pose_;
-    msg_poses[1] = motor1.pose_;
-    msg_vels[0] = motor0.velocity_;
-    msg_vels[1] = motor1.velocity_;
-    msg_targets[0] = motor0.target_;
-    msg_targets[1] = motor1.target_;
 }
 
 
 void Motor::set_cmd_vel(float cmd_vel) {
-    cmd_vel_ = cmd_vel;
-}
-
-
-void Motor::reset() {
-    setPwm(0, 0);
-    pose_ = 0;
-    target_ = 0;
-    cmd_vel_ = 0;
-    prev_pose_ = 0;
-    e_prev_ = 0;
-    e_integral_ = 0;
-}
-
-
-void Motor::resetMotors() {
-    motor0.reset();
-    motor1.reset();
+    cmd_vel_ = cmd_vel > 255 ? 255 : cmd_vel;
+    cmd_vel_ = cmd_vel_ < -255 ? -255 : cmd_vel_;
 }
 
 
 void Motor::callback(uint8_t* msg) {
     uint8_t reset = 0;
     memcpy(&reset, msg + CMD_RESET_IDX, sizeof(uint8_t));
-
-    if (reset == 1) {
-        return resetMotors();
-    }
     
     memcpy(cmd_vels + 0, msg + CMD_VEL0_IDX, sizeof(float));
     memcpy(cmd_vels + 1, msg + CMD_VEL1_IDX, sizeof(float));
-    
-    memcpy(&kp, msg + CMD_KP_IDX, sizeof(float));
-    memcpy(&ki, msg + CMD_KI_IDX, sizeof(float));
-    memcpy(&kd, msg + CMD_KD_IDX, sizeof(float));
 
     motor0.set_cmd_vel(cmd_vels[0]);
     motor1.set_cmd_vel(cmd_vels[1]);
