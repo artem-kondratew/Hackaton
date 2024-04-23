@@ -1,0 +1,11 @@
+{   
+    "pub_cam_topic": "/control/camera_angles",
+    "pub_grip_topic": "/control/gripper_angles",
+    "pub_task_topic": "/control/task_number",
+
+    "max_cam_angle": 255,
+    "min_cam_angle": 0,
+    "max_grip_angle": 255,
+    "min_grip_angle": 0
+   
+}
