@@ -13,6 +13,7 @@
 #include <std_msgs/msg/bool.hpp>
 #include "robot_msgs/msg/u_int8_vector.hpp"
 #include "robot_msgs/msg/float32_vector.hpp"
+#include "robot_msgs/msg/omega_angles.hpp"
 
 
 using namespace std::chrono_literals;
@@ -26,8 +27,14 @@ private:
 
     rclcpp::Publisher<robot_msgs::msg::UInt8Vector>::SharedPtr serial_pub_;
     rclcpp::Subscription<geometry_msgs::msg::Twist>::SharedPtr cmd_vel_sub_;
+    rclcpp::Subscription<robot_msgs::msg::OmegaAngles>::SharedPtr camera_sub_;
+    rclcpp::Subscription<robot_msgs::msg::OmegaAngles>::SharedPtr gripper_sub_;
 
     size_t cmd_size_, pose_num_, pose_size_, vel_num_, vel_size_;
+    size_t angles_size_, camera_yaw_idx_, camera_pitch_idx_, gripper_yaw_idx_, gripper_pitch_idx_, task_;
+
+    uint8_t camera_yaw_, camera_pitch_, gripper_yaw_, gripper_pitch_;
+    geometry_msgs::msg::Twist msg_;
 
 public:
     DriveController();
@@ -35,30 +42,58 @@ public:
 private:
     std::vector<float> calcForwardKinematics(std::vector<float> V);    
     void cmdVelCallback(const geometry_msgs::msg::Twist& msg);
+    void cameraCallback(const robot_msgs::msg::OmegaAngles& msg);
+    void gripperCallback(const robot_msgs::msg::OmegaAngles& msg);
 };
 
 
 DriveController::DriveController() : Node("drive_controller") {
     this->declare_parameter("cmd_vel_sub", "");
+    this->declare_parameter("camera_sub", "");
+    this->declare_parameter("gripper_sub", "");
     this->declare_parameter("serial_sub", "");
     this->declare_parameter("cmd_size", 0);
     this->declare_parameter("vel_num", 0);
     this->declare_parameter("vel_size", 0);
+    this->declare_parameter("angles_size", 0);
+    this->declare_parameter("camera_yaw", 0);
+    this->declare_parameter("camera_pitch", 0);
+    this->declare_parameter("gripper_yaw", 0);
+    this->declare_parameter("gripper_pitch", 0);
+    this->declare_parameter("task", 0);
 
     std::string cmd_vel_sub_topic = this->get_parameter("cmd_vel_sub").as_string();
+    std::string camera_sub_topic = this->get_parameter("camera_sub").as_string();
+    std::string gripper_sub_topic = this->get_parameter("gripper_sub").as_string();
     std::string serial_sub_topic = this->get_parameter("serial_sub").as_string();
     cmd_size_ = this->get_parameter("cmd_size").as_int();
     vel_num_ = this->get_parameter("vel_num").as_int();
     vel_size_ = this->get_parameter("vel_size").as_int();
+    angles_size_ = this->get_parameter("angles_size").as_int();
+    camera_yaw_idx_ = this->get_parameter("camera_yaw").as_int();
+    camera_pitch_idx_ = this->get_parameter("camera_pitch").as_int();
+    gripper_yaw_idx_ = this->get_parameter("gripper_yaw").as_int();
+    gripper_pitch_idx_ = this->get_parameter("gripper_pitch").as_int();
+    task_ = this->get_parameter("task").as_int();
 
     RCLCPP_INFO(this->get_logger(), "vel_sub_topic: '%s'", cmd_vel_sub_topic.c_str());
+    RCLCPP_INFO(this->get_logger(), "camera_sub_topic: '%s'", camera_sub_topic.c_str());
+    RCLCPP_INFO(this->get_logger(), "gripper_sub_topic: '%s'", gripper_sub_topic.c_str());
     RCLCPP_INFO(this->get_logger(), "serial_sub_topic: '%s'", serial_sub_topic.c_str());
     RCLCPP_INFO(this->get_logger(), "cmd_size: %ld", cmd_size_);
     RCLCPP_INFO(this->get_logger(), "vel_num: %ld", vel_num_);
     RCLCPP_INFO(this->get_logger(), "vel_size: %ld", vel_size_);
+    RCLCPP_INFO(this->get_logger(), "angles_size: %ld", angles_size_);
+    RCLCPP_INFO(this->get_logger(), "camera_yaw: %ld", camera_yaw_idx_);
+    RCLCPP_INFO(this->get_logger(), "camera_pitch: %ld", camera_pitch_idx_);
+    RCLCPP_INFO(this->get_logger(), "gripper_yaw: %ld", gripper_yaw_idx_);
+    RCLCPP_INFO(this->get_logger(), "gripper_pitch: %ld", gripper_pitch_idx_);
+    RCLCPP_INFO(this->get_logger(), "task: %ld", task_);
 
     serial_pub_ = this->create_publisher<robot_msgs::msg::UInt8Vector>(serial_sub_topic, 10);
     cmd_vel_sub_ = this->create_subscription<geometry_msgs::msg::Twist>(cmd_vel_sub_topic, 10, std::bind(&DriveController::cmdVelCallback, this, _1));
+    camera_sub_ = this->create_subscription<robot_msgs::msg::OmegaAngles>(camera_sub_topic, 10, std::bind(&DriveController::cameraCallback, this, _1));
+    gripper_sub_ = this->create_subscription<robot_msgs::msg::OmegaAngles>(gripper_sub_topic, 10, std::bind(&DriveController::gripperCallback, this, _1));
 }
 
 
@@ -98,7 +133,29 @@ void DriveController::cmdVelCallback(const geometry_msgs::msg::Twist& msg) {
         std::memcpy(serial_msg.data.data() + i * vel_size_, W.data() + i, vel_size_);
     }
 
+    RCLCPP_INFO(this->get_logger(), "%d %d %d %d", camera_yaw_, camera_pitch_, gripper_yaw_, gripper_pitch_);
+
+    std::memcpy(serial_msg.data.data() + camera_yaw_idx_, &camera_yaw_, angles_size_);
+    std::memcpy(serial_msg.data.data() + camera_pitch_idx_, &camera_pitch_, angles_size_);
+    std::memcpy(serial_msg.data.data() + gripper_yaw_idx_, &gripper_yaw_, angles_size_);
+    std::memcpy(serial_msg.data.data() + gripper_pitch_idx_, &gripper_pitch_, angles_size_);
+    std::memcpy(serial_msg.data.data() + task_, &task_, sizeof(uint8_t));
+
     serial_pub_->publish(serial_msg);
+}
+
+
+void DriveController::cameraCallback(const robot_msgs::msg::OmegaAngles& msg) {
+    camera_yaw_ = msg.horiz_angle;
+    camera_pitch_ = msg.vert_angle;
+    cmdVelCallback(msg_);
+}
+
+
+void DriveController::gripperCallback(const robot_msgs::msg::OmegaAngles& msg) {
+    gripper_yaw_ = msg.horiz_angle;
+    gripper_pitch_ = msg.vert_angle;
+    cmdVelCallback(msg_);
 }
 
 

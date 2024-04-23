@@ -20,12 +20,5 @@
 #define CMD_GRIPPER_PITCH_IDX 13
 #define CMD_TASK_IDX          14
 
-#define CMD_VEL0_IDX           2
-#define CMD_VEL1_IDX           6
-#define CMD_KP_IDX            10
-#define CMD_KI_IDX            14
-#define CMD_KD_IDX            18
-#define CMD_RESET_IDX         22
-
 
 #endif // DRIVE_CONTROLLER_CONFIG_H

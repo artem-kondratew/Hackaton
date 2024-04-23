@@ -5,11 +5,15 @@
 #include <Servo.h>
 
 
-Servo camera_yaw_servo;
-Servo camera_pitch_servo;
-
-
 namespace Camera {
+    Servo yaw_servo;
+    Servo pitch_servo;
+
+    bool changed = false;
+
+    uint8_t yaw_pin_ = 9;
+    uint8_t pitch_pin_ = 10;
+    
     float yaw_min_ = 0;
     float yaw_max_ = 255;
     float pitch_min_ = 0;
@@ -31,20 +35,27 @@ namespace Camera {
 
 
 void Camera::init() {
-    camera_yaw_servo.write(default_yaw_);
-    camera_pitch_servo.write(default_pitch_);
+    yaw_servo.write(default_yaw_);
+    pitch_servo.write(default_pitch_);
+    yaw_servo.attach(yaw_pin_);
+    pitch_servo.attach(pitch_pin_);
 }
 
 
 void Camera::set_angles(float yaw, float pitch) {
     set_yaw(yaw);
     set_pitch(pitch);
+    changed = true;
 }
 
 
 void Camera::spin() {
-    camera_yaw_servo.write(yaw_);
-    camera_pitch_servo.write(pitch_);
+    if (!changed) {
+        return;
+    }
+    yaw_servo.write(yaw_);
+    pitch_servo.write(pitch_);
+    changed = false;
 }
 
 
