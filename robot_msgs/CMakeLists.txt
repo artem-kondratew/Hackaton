@@ -12,6 +12,7 @@ rosidl_generate_interfaces(${PROJECT_NAME}
   "msg/Float32Vector.msg"
   "msg/Odom.msg"
   "msg/UInt8Vector.msg"
+  "msg/OmegaAngles.msg"
 )
 
 ament_package()
