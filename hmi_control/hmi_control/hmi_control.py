@@ -2,10 +2,12 @@ import sys
 import threading
 
 from robot_msgs.msg import OmegaAngles
+from std_msgs.msg import UInt8
 import rclpy
 
 import termios
 import tty
+
 
 
 msg = """
@@ -19,6 +21,13 @@ e/q : increase/decrease horizontal angle by 5
 Gripper Control:
 w/s : increase/decrease vertical angle by 5
 d/a : increase/decrease horizontal angle by 5
+---------------------------
+Task Control:
+1-4 : choose required number of task
+1 : line following
+2 : break
+3 : beep
+4 : blinking
 ---------------------------
 CTRL-C to quit
 """
@@ -36,6 +45,9 @@ gripperBindings = {
     'd': (0, 5),
     'a': (0, -5),
 }
+
+taskBindings = {"1", "2", "3", "4"}
+
 
 def getKey(settings):
     tty.setraw(sys.stdin.fileno())  # sys.stdin.read() returns a string on Linux
@@ -61,10 +73,11 @@ def main():
 
     rclpy.init()
 
-    node = rclpy.create_node('angle_control_node')
+    node = rclpy.create_node('hmi_control_node')
 
     pub_cam = node.create_publisher(OmegaAngles, '/control/camera_angles', 10)
     pub_grip = node.create_publisher(OmegaAngles, '/control/gripper_angles', 10)
+    pub_task = node.create_publisher(UInt8, '/control/task_number', 10)
 
     spinner = threading.Thread(target=rclpy.spin, args=(node,))
     spinner.start()
@@ -77,6 +90,7 @@ def main():
     status = 0.0
 
     angles_msg = OmegaAngles()
+    curr_task = UInt8()
 
     camera_msg = angles_msg
     gripper_msg = angles_msg
@@ -86,6 +100,7 @@ def main():
         print(msg)
         while True:
             key = getKey(settings)
+            print(key)
             if key in cameraBindings.keys():
                 camera_vert += cameraBindings[key][0]
                 camera_horiz += cameraBindings[key][1]
@@ -133,6 +148,17 @@ def main():
                 status = (status + 1) % 15
                 
                 pub_grip.publish(gripper_msg)
+
+            elif key in taskBindings:
+                print(f'Current task number is {key}')
+                if (status == 14):
+                    print(msg)
+                status = (status + 1) % 15
+
+                curr_task.data = int(key)
+
+                pub_task.publish(curr_task)
+
             else:
                 if (key == '\x03'):
                     break
