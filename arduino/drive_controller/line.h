@@ -3,13 +3,13 @@
 #define RIGHT_PWM 5
 #define RIGHT_DIR 4
 
-//#define K_P 1.0
-//#define K_D 5.0
-
 #define K_P 3.0
 #define K_D 20.0
 
 #define V 190
+
+
+namespace LineFollower {
 
 int left_min = 1023;
 int left_max = 0;
@@ -30,7 +30,8 @@ void drive(int left, int right)
   analogWrite(RIGHT_PWM, abs(right));
 }
 
-void setup() {
+
+void calib() {
   pinMode(LEFT_PWM, OUTPUT);
   pinMode(LEFT_DIR, OUTPUT);
   pinMode(RIGHT_PWM, OUTPUT);
@@ -72,28 +73,17 @@ void setup() {
   }
 }
 
-void loop() {
-  if(flag)
-  {
-    int s1 = map(analogRead(A2), left_min, left_max, 0, 100);
-    int s2 = map(analogRead(A3), right_min, right_max, 0, 100);
-    double err = s1 - s2;
-    double u = err*K_P + (err - errold)*K_D;
-    drive(constrain(V + u, 250, -100), constrain(V - u, 250, -100));
-    errold = err;
+
+void follow() {
+  if (FOLLOW_FLAG == false) {
+    return;
   }
-  else
-  {
-    drive(0, 0);
-  }
-  //delay(1);
-  if(digitalRead(A1) == 1 && button_old == 0)
-  {
-    delay(5);
-    if(digitalRead(A1) == 1)
-    {
-      flag = !flag; 
-    }
-  }
-  button_old = digitalRead(A1);
+  int s1 = map(analogRead(A2), left_min, left_max, 0, 100);
+  int s2 = map(analogRead(A3), right_min, right_max, 0, 100);
+  double err = s1 - s2;
+  double u = err * K_P + (err - errold) * K_D;
+  drive(constrain(V + u, 250, -100), constrain(V - u, 250, -100));
+  errold = err;
+}
+
 }
