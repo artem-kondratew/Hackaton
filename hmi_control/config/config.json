@@ -3,9 +3,9 @@
     "pub_grip_topic": "/control/gripper_angles",
     "pub_task_topic": "/control/task_number",
 
-    "max_cam_v_angle": 255,
-    "min_cam_v_angle": 0,
-    "max_cam_h_angle": 255,
+    "max_cam_v_angle": 180,
+    "min_cam_v_angle": 40,
+    "max_cam_h_angle": 180,
     "min_cam_h_angle": 0,
 
     "max_grip_v_angle": 100,

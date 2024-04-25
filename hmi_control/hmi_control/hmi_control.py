@@ -44,7 +44,7 @@ w/x : increase/decrease only linear speed by 10%
 e/c : increase/decrease only angular speed by 10%
 ---------------------------
 Camera Control:
-a/s : decrease/increase vertical angle by 5
+s/a : decrease/increase vertical angle by 5
 d/f : decrease/increase horizontal angle by 5
 ---------------------------
 Gripper Control:
@@ -79,8 +79,8 @@ speedBindings = {
 }
 
 cameraBindings = {
-    's': (5, 0),
-    'a': (-5, 0),
+    'a': (5, 0),
+    's': (-5, 0),
     'f': (0, 5),
     'd': (0, -5)
 }
@@ -139,10 +139,10 @@ def main():
     z = 0.0
     th = 0.0
     
-    camera_horiz = 0  # TODO: MAKE CORRECT INITIAL VALUES
-    camera_vert = 0
-    gripper_horiz = 0
-    gripper_vert = 0
+    camera_horiz = 80
+    camera_vert = 90
+    gripper_horiz = 40
+    gripper_vert = 5
 
     status = 0.0
 
@@ -230,7 +230,7 @@ def main():
                 if gripper_horiz < MIN_GRIP_H_ANGLE:
                     gripper_horiz = MIN_GRIP_H_ANGLE
                 if gripper_horiz > MAX_GRIP_H_ANGLE:
-                    gripper_horiz = MAX_GRIP_V_ANGLE
+                    gripper_horiz = MAX_GRIP_H_ANGLE
 
                 gripper_msg.vert_angle = gripper_vert
                 gripper_msg.horiz_angle = gripper_horiz

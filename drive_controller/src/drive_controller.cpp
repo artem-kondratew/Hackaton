@@ -48,6 +48,9 @@ private:
 
 
 DriveController::DriveController() : Node("drive_controller") {
+    camera_yaw_ = 100;
+    camera_pitch_ = 100;
+
     this->declare_parameter("cmd_vel_sub", "");
     this->declare_parameter("camera_sub", "");
     this->declare_parameter("gripper_sub", "");

@@ -9,10 +9,10 @@ uint64_t start_time;
 
 
 void robotCallback(uint8_t* msg) {
-    uint8_t camera_yaw;
-    uint8_t camera_pitch;
-    uint8_t gripper_yaw;
-    uint8_t gripper_pitch;
+    uint8_t camera_yaw = 100;
+    uint8_t camera_pitch = 100;
+    uint8_t gripper_yaw = 100;
+    uint8_t gripper_pitch = 0;
     uint8_t task = 0;
     
     memcpy(cmd_vels + 0, msg + CMD_VEL0_IDX, sizeof(float));
@@ -40,12 +40,12 @@ void setup() {
     pinMode(LED_BUILTIN, OUTPUT);
     digitalWrite(LED_BUILTIN, LOW);
 
-    //Camera::init();
-    Gripper::init();
-
     serial::init();
 
     serial::connect();
+
+    Camera::init();
+    Gripper::init();
 
     start_time = millis();
 }
@@ -55,8 +55,6 @@ void loop() {
     serial::receive();
     
     Motor::spinMotors();
-    Camera::spin();
-    Gripper::spin();
 
     if (millis() - start_time >= 100) {
         serial::send_data();
