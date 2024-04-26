@@ -1,0 +1,38 @@
+drive_controller_serial:
+    ros__parameters:
+        port: /dev/ttyACM2                         # arduino port
+        baudrate: 2000000                          # baudrate for arduino
+        cmd_size: 16                               # msg size from linux
+        msg_size: 35                               # msg size from arduino
+        receive_time: 100                          # delay after receiving msg from arduino
+        pub_topic: /serial/drive_controller/pub    # topic name for arduino receiver
+        sub_topic: /serial/drive_controller/sub    # topic name for arduino sender
+
+drive_controller:
+    ros__parameters:
+        cmd_vel_sub: /cmd_vel                      # input cmd_vel topic
+        camera_sub: /control/camera_angles         # topic with camera's servos angles
+        gripper_sub: /control/gripper_angles       # topic with gripper's servos angles
+        task_sub: /control/task_number             # topic with task number from hmi_control
+        serial_sub: /serial/drive_controller/sub   # topic with motors velocities values in rad/s
+
+        cmd_size: 13                               # cmd size
+        vel_num: 2                                 # number of velocities in serial msg
+        vel_size: 4                                # size of each velocity in serial msg
+        angles_size: 1                             # sizes of each angle for camera and gripper
+        camera_yaw: 8                              # camera yaw angle idx
+        camera_pitch: 9                            # camera pitch idx
+        gripper_yaw: 10                            # gripper yaw idx
+        gripper_pitch: 11                          # gripper pitch idx
+        task: 12                                   # idx for arduino tasks
+
+keyboard_handler:
+    ros__parameters:
+        pid_pub: /drive_controller/pid             # topic with PID-terms from keyboard handler
+        reset_pub: /drive_controller/reset         # odom reset topic from keyboard handler
+
+        kp: 2.0                                    # P-term of PID regulator
+        ki: 0.0                                    # I-term of PID regulator
+        kd: 0.1                                    # D-term of PID regulator
+
+        reset_timeout: 2                           # reset timeout (in seconds) for odom reset
