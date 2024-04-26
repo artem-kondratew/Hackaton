@@ -53,10 +53,11 @@ y/u : decrease/increase horizontal angle by 5
 ---------------------------
 Task Control:
 1-4 : choose required number of task
-1 : line following
-2 : break
+1 : start line following
+2 : break line following
 3 : beep
 4 : blinking
+9 : set defaults
 ---------------------------
 CTRL-C to quit
 """
@@ -87,12 +88,12 @@ cameraBindings = {
 
 gripperBindings = {
     't': (5, 0),
-    'r': (-5, 0),
+    'g': (-5, 0),
     'u': (0, 5),
     'y': (0, -5)
 }
 
-taskBindings = {"1", "2", "3", "4"}
+taskBindings = {"1", "2", "3", "4", "9"}
 
 def getKey(settings):
     tty.setraw(sys.stdin.fileno())  # sys.stdin.read() returns a string on Linux
@@ -146,6 +147,8 @@ def main():
 
     status = 0.0
 
+
+
     angles_msg = OmegaAngles()
     curr_task = UInt8()
     twist_msg = Twist()
@@ -153,6 +156,10 @@ def main():
     camera_msg = angles_msg
     gripper_msg = angles_msg
     twist = twist_msg
+
+    curr_task.data = 9
+    pub_task.publish(curr_task)
+    curr_task = UInt8()
 
     try:
         print(msg)
@@ -248,6 +255,11 @@ def main():
                 status = (status + 1) % 15
 
                 curr_task.data = int(key)
+                if int(key) == 9:
+                    gripper_vert = 5
+                    gripper_horiz = 40
+                    camera_horiz = 80
+                    camera_vert = 90
                 print(f'Current task number is {curr_task.data}')
 
                 pub_task.publish(curr_task)

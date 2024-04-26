@@ -1,6 +1,6 @@
 drive_controller_serial:
     ros__parameters:
-        port: /dev/ttyACM1                         # arduino port
+        port: /dev/ttyACM2                         # arduino port
         baudrate: 2000000                          # baudrate for arduino
         cmd_size: 16                               # msg size from linux
         msg_size: 35                               # msg size from arduino
@@ -13,6 +13,7 @@ drive_controller:
         cmd_vel_sub: /cmd_vel                      # input cmd_vel topic
         camera_sub: /control/camera_angles         # topic with camera's servos angles
         gripper_sub: /control/gripper_angles       # topic with gripper's servos angles
+        task_sub: /control/task_number             # topic with task number from hmi_control
         serial_sub: /serial/drive_controller/sub   # topic with motors velocities values in rad/s
 
         cmd_size: 13                               # cmd size

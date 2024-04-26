@@ -11,6 +11,6 @@
     "max_grip_v_angle": 100,
     "min_grip_v_angle": 0,
     "max_grip_h_angle": 180,
-    "min_grip_h_angle": 40
+    "min_grip_h_angle": 0
    
 }

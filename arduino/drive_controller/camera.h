@@ -17,8 +17,8 @@ namespace Camera {
     float pitch_min_ = 40;
     float pitch_max_ = 180;
 
-    float default_yaw_ = 100;
-    float default_pitch_ = 100;
+    float default_yaw_ = 80;
+    float default_pitch_ = 90;
 
     void init();
     void set_angles(float yaw, float pitch);

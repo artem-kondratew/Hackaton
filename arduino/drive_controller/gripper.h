@@ -17,8 +17,8 @@ namespace Gripper {
     float grab_min_ = 40;
     float grab_max_ = 180;
 
-    float default_pitch_ = 0;
-    float default_grab_ = 100;
+    float default_pitch_ = 5;
+    float default_grab_ = 40;
 
     void init();
     void set_angles(float grab, float pitch);

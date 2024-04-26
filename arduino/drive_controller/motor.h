@@ -12,6 +12,9 @@ float cmd_vels[MOTORS];
 #define M1_PWM 5
 
 
+bool LINE_FLAG = false;
+
+
 class Motor {
 private:
     uint8_t dir_;
@@ -61,6 +64,9 @@ void Motor::spin() {
 
 
 void Motor::spinMotors() {
+    if (LINE_FLAG) {
+      return;
+    }
     motor0.spin();
     motor1.spin();
 }
